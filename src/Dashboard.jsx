@@ -18,10 +18,12 @@ import MapView from './MapView';
 import CuriositiesView from './CuriositiesView';
 import CommunityView from './CommunityView';
 import SettingsView from './SettingsView';
+import DonorActivityView from './DonorActivityView';
 
 const Dashboard = ({ onLogout }) => {
   const [status, setStatus] = useState('livre'); // 'livre' or 'ocupado'
   const [activeTab, setActiveTab] = useState('Home');
+  const [headerTab, setHeaderTab] = useState('Dashboard');
 
   const menuItems = [
     { name: 'Home', icon: <LayoutDashboard size={20} /> },
@@ -115,9 +117,24 @@ const Dashboard = ({ onLogout }) => {
             {/* Header */}
             <header className="flex items-center justify-between mb-12">
               <div className="flex gap-8">
-                <button className="text-brand-red font-semibold border-b-2 border-brand-red pb-1">Dashboard</button>
-                <button className="text-gray-400 hover:text-gray-600">Inventário</button>
-                <button className="text-gray-400 hover:text-gray-600">Análise</button>
+                <button 
+                  onClick={() => setHeaderTab('Dashboard')}
+                  className={`font-semibold pb-1 transition-all ${headerTab === 'Dashboard' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
+                >
+                  Dashboard
+                </button>
+                <button 
+                  onClick={() => setHeaderTab('Minhas Atividades')}
+                  className={`font-semibold pb-1 transition-all ${headerTab === 'Minhas Atividades' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
+                >
+                  Minhas Atividades
+                </button>
+                <button 
+                  onClick={() => setHeaderTab('Análise')}
+                  className={`font-semibold pb-1 transition-all ${headerTab === 'Análise' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
+                >
+                  Análise
+                </button>
               </div>
 
               <div className="flex items-center gap-6">
@@ -133,13 +150,14 @@ const Dashboard = ({ onLogout }) => {
                   <Bell size={20} />
                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand-red rounded-full border-2 border-white"></span>
                 </button>
-                <button className="text-brand-red hover:text-red-700">
-                  <Star size={20} fill="currentColor" />
-                </button>
                 <div className="w-10 h-10 bg-blue-600 rounded-full"></div>
               </div>
             </header>
 
+            {headerTab === 'Minhas Atividades' ? (
+              <DonorActivityView />
+            ) : (
+            <>
             {/* Welcome Section */}
             <div className="flex justify-between items-start mb-10">
               <div className="max-w-xl">
@@ -301,6 +319,8 @@ const Dashboard = ({ onLogout }) => {
                 </div>
               </div>
             </div>
+            </>
+            )}
           </div>
         </main>
       )}

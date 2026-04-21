@@ -146,9 +146,6 @@ const HospitalDashboard = ({ onLogout }) => {
                   <Bell size={20} />
                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand-red rounded-full border-2 border-white"></span>
                 </button>
-                <button className="text-brand-red hover:text-red-700">
-                  <Star size={20} fill="currentColor" />
-                </button>
                 <div className="w-10 h-10 bg-blue-600 rounded-full"></div>
               </div>
             </header>
