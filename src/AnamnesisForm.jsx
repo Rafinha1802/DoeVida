@@ -5,7 +5,6 @@ import { MapPin, ArrowRight, ChevronLeft, Mail, Lock, Phone, Map, Stethoscope } 
 const AnamnesisForm = ({ onComplete, onCancel }) => {
   const [formData, setFormData] = useState({
     email: '',
-    telefone: '',
     senha: '',
     cep: '',
     cidade: '',
@@ -26,7 +25,7 @@ const AnamnesisForm = ({ onComplete, onCancel }) => {
   };
 
   const isComplete = () => {
-    const requiredFields = ['email', 'telefone', 'senha', 'cep', 'cidade', 'estado', 'peso', 'jaDoou', 'doenca', 'medicamentos'];
+    const requiredFields = ['email', 'senha', 'cep', 'cidade', 'estado', 'peso', 'jaDoou', 'doenca', 'medicamentos'];
     const hasAllRequired = requiredFields.every(key => formData[key].trim() !== '');
     if (!hasAllRequired) return false;
     
@@ -97,22 +96,7 @@ const AnamnesisForm = ({ onComplete, onCancel }) => {
                 />
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-700 uppercase tracking-wide flex items-center gap-2">
-                  <Phone size={16} className="text-brand-red" /> Telefone
-                </label>
-                <input
-                  type="tel"
-                  name="telefone"
-                  value={formData.telefone}
-                  onChange={handleChange}
-                  placeholder="(00) 00000-0000"
-                  className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
-                  required
-                />
-              </div>
-
-              <div className="space-y-3">
+              <div className="space-y-3 md:col-span-2">
                 <label className="text-sm font-bold text-gray-700 uppercase tracking-wide flex items-center gap-2">
                   <Lock size={16} className="text-brand-red" /> Senha
                 </label>

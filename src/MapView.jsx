@@ -27,10 +27,11 @@ const MapView = ({ userType, onBack }) => {
   ];
 
   const hospitals = [
-    { id: 1, name: 'Hospital Português', dist: '1.2 km', pos: { top: '35%', left: '45%' }, time: '12 min', status: 'Necessidade Urgente' },
-    { id: 2, name: 'Cruz Vermelha', dist: '3.5 km', pos: { top: '75%', left: '25%' }, time: '25 min', status: 'Estoque Moderado' },
-    { id: 3, name: 'Hospital Unimed', dist: '4.8 km', pos: { top: '25%', left: '15%' }, time: '35 min', status: 'Necessidade Crítica' },
+    { id: 1, name: 'Hospital Português', dist: '1.2 km', pos: { top: '35%', left: '45%' }, time: '12 min', status: 'Necessidade Urgente', hours: '08:00 - 18:00' },
+    { id: 2, name: 'Cruz Vermelha', dist: '3.5 km', pos: { top: '75%', left: '25%' }, time: '25 min', status: 'Estoque Moderado', hours: 'Atendimento 24h' },
+    { id: 3, name: 'Hospital Unimed', dist: '4.8 km', pos: { top: '25%', left: '15%' }, time: '35 min', status: 'Necessidade Crítica', hours: '07:00 - 19:00' },
   ];
+
 
   const handleLaunch = () => {
     setIsLaunching(true);
@@ -142,11 +143,16 @@ const MapView = ({ userType, onBack }) => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 bg-white p-4 rounded-2xl shadow-2xl min-w-[150px]"
+                    className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 bg-white p-4 rounded-2xl shadow-2xl min-w-[160px]"
                   >
                     <p className="font-bold text-gray-800">{hospital.name}</p>
-                    <p className="text-[10px] text-brand-red font-bold">{hospital.status}</p>
-                    <p className="text-[10px] text-gray-400">{hospital.dist}</p>
+                    <p className="text-[10px] text-brand-red font-bold mb-1">{hospital.status}</p>
+                    <p className="text-[10px] text-gray-400 flex items-center gap-1"><MapPin size={10} /> {hospital.dist}</p>
+                    {hospital.hours && (
+                      <p className="text-[10px] text-blue-600 font-bold flex items-center gap-1 mt-1">
+                        <Clock size={10} /> {hospital.hours}
+                      </p>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -208,8 +214,13 @@ const MapView = ({ userType, onBack }) => {
                     </div>
                     <div className="flex-1">
                       <p className="font-bold text-gray-800">{hospital.name}</p>
-                      <p className="text-xs text-gray-400">{hospital.dist} ÔÇó {hospital.time}</p>
+                      <p className="text-xs text-gray-400">{hospital.dist} • {hospital.time}</p>
                       <p className="text-[10px] text-brand-red font-bold mt-1">{hospital.status}</p>
+                      {hospital.hours && (
+                        <p className="text-[10px] text-blue-600 font-bold flex items-center gap-1 mt-1">
+                          <Clock size={10} /> {hospital.hours}
+                        </p>
+                      )}
                     </div>
                     <ChevronRight size={20} className="text-gray-300" />
                   </motion.div>

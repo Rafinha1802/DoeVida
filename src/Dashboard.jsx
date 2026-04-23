@@ -11,8 +11,11 @@ import {
   LogOut,
   HelpCircle,
   ChevronRight,
-  TrendingUp,
-  MapPin
+  Award,
+  MapPin,
+  Calendar,
+  X,
+  Clock
 } from 'lucide-react';
 import MapView from './MapView';
 import CuriositiesView from './CuriositiesView';
@@ -24,6 +27,11 @@ const Dashboard = ({ onLogout }) => {
   const [status, setStatus] = useState('livre'); // 'livre' or 'ocupado'
   const [activeTab, setActiveTab] = useState('Home');
   const [headerTab, setHeaderTab] = useState('Dashboard');
+  const [isScheduling, setIsScheduling] = useState(false);
+  const [selectedHospital, setSelectedHospital] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+  const [appointments, setAppointments] = useState([]);
 
   const menuItems = [
     { name: 'Home', icon: <LayoutDashboard size={20} /> },
@@ -38,6 +46,25 @@ const Dashboard = ({ onLogout }) => {
     { hospital: 'Cruz Vermelha', date: 'Ago 28, 2023', status: 'COMPLETO' },
     { hospital: 'Hospital Unimed', date: 'Mai 15, 2023', status: 'COMPLETO' },
   ];
+
+  const handleScheduleSubmit = (e) => {
+    e.preventDefault();
+    if (selectedHospital && selectedDate && selectedTime) {
+      setAppointments([
+        {
+          hospital: selectedHospital,
+          date: new Date(selectedDate).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' }),
+          time: selectedTime,
+          status: 'AGENDADO'
+        },
+        ...appointments
+      ]);
+      setIsScheduling(false);
+      setSelectedHospital('');
+      setSelectedDate('');
+      setSelectedTime('');
+    }
+  };
 
   const urgentCases = [
     {
@@ -240,7 +267,7 @@ const Dashboard = ({ onLogout }) => {
                 </div>
                 <div className="w-48 bg-blue-50 rounded-3xl flex flex-col items-center justify-center p-6 text-center">
                   <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-blue-600 shadow-sm mb-4">
-                    <TrendingUp size={32} />
+                    <Award size={32} />
                   </div>
                   <span className="text-blue-800 text-xs font-bold uppercase tracking-tighter">Status de Herói</span>
                 </div>
@@ -256,6 +283,22 @@ const Dashboard = ({ onLogout }) => {
                   <button className="text-brand-red text-sm font-semibold hover:underline">Ver tudo</button>
                 </div>
                 <div className="space-y-4">
+                  {appointments.map((apt, idx) => (
+                    <div key={`apt-${idx}`} className="bg-brand-red-light/20 p-5 rounded-2xl flex items-center justify-between border border-brand-red-light/50 hover:shadow-md transition-shadow">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-gray-800 flex items-center gap-2">
+                          <Calendar size={14} className="text-brand-red" />
+                          {apt.hospital}
+                        </span>
+                        <span className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                          <Clock size={12} /> {apt.date} às {apt.time}
+                        </span>
+                      </div>
+                      <span className="bg-brand-red text-white text-[10px] font-bold px-3 py-1 rounded-md">
+                        {apt.status}
+                      </span>
+                    </div>
+                  ))}
                   {recentActivities.map((activity, idx) => (
                     <div key={idx} className="bg-white p-5 rounded-2xl flex items-center justify-between border border-gray-50 hover:shadow-md transition-shadow">
                       <div className="flex flex-col">
@@ -268,8 +311,12 @@ const Dashboard = ({ onLogout }) => {
                     </div>
                   ))}
                 </div>
-                <button className="mt-8 bg-brand-red text-white w-full py-4 rounded-xl font-bold hover:bg-red-700 transition-colors shadow-lg shadow-brand-red/20">
-                  Poste alguma urgência
+                <button 
+                  onClick={() => setIsScheduling(true)}
+                  className="mt-8 bg-brand-red text-white w-full py-4 rounded-xl font-bold hover:bg-red-700 transition-colors shadow-lg shadow-brand-red/20 flex items-center justify-center gap-2"
+                >
+                  <Calendar size={20} />
+                  Agendar Doação
                 </button>
               </div>
 
@@ -321,6 +368,84 @@ const Dashboard = ({ onLogout }) => {
             </div>
             </>
             )}
+            {/* Scheduling Modal */}
+            <AnimatePresence>
+              {isScheduling && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="bg-white rounded-[32px] p-8 md:p-10 w-full max-w-lg shadow-2xl relative"
+                  >
+                    <button 
+                      onClick={() => setIsScheduling(false)}
+                      className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 transition-colors bg-gray-100 rounded-full p-2"
+                    >
+                      <X size={20} />
+                    </button>
+                    
+                    <div className="flex items-center gap-4 mb-8">
+                      <div className="w-12 h-12 bg-brand-red-light/30 rounded-2xl flex items-center justify-center text-brand-red">
+                        <Calendar size={24} />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Agendar Doação</h2>
+                        <p className="text-sm text-gray-500">Escolha o melhor local e horário</p>
+                      </div>
+                    </div>
+
+                    <form onSubmit={handleScheduleSubmit} className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Hospital / Hemocentro</label>
+                        <select 
+                          required
+                          value={selectedHospital}
+                          onChange={(e) => setSelectedHospital(e.target.value)}
+                          className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none focus:ring-2 focus:ring-brand-red/20 transition-all appearance-none"
+                        >
+                          <option value="">Selecione um local...</option>
+                          <option value="Hospital Português">Hospital Português (08:00 - 18:00)</option>
+                          <option value="Cruz Vermelha">Cruz Vermelha (Atendimento 24h)</option>
+                          <option value="Hospital Unimed">Hospital Unimed (07:00 - 19:00)</option>
+                        </select>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Data</label>
+                          <input 
+                            type="date" 
+                            required
+                            value={selectedDate}
+                            onChange={(e) => setSelectedDate(e.target.value)}
+                            min={new Date().toISOString().split('T')[0]}
+                            className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none focus:ring-2 focus:ring-brand-red/20 transition-all"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Horário</label>
+                          <input 
+                            type="time" 
+                            required
+                            value={selectedTime}
+                            onChange={(e) => setSelectedTime(e.target.value)}
+                            className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none focus:ring-2 focus:ring-brand-red/20 transition-all"
+                          />
+                        </div>
+                      </div>
+
+                      <button 
+                        type="submit"
+                        className="w-full bg-brand-red text-white py-4 rounded-xl font-bold text-lg hover:bg-red-700 transition-colors shadow-lg shadow-brand-red/20 mt-4"
+                      >
+                        Confirmar Agendamento
+                      </button>
+                    </form>
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
           </div>
         </main>
       )}

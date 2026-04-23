@@ -15,7 +15,12 @@ import {
   Maximize2,
   Filter,
   ChevronRight,
-  MessageSquare
+  MessageSquare,
+  Calendar,
+  Check,
+  X,
+  AlertTriangle,
+  FileText
 } from 'lucide-react';
 import MapView from './MapView';
 import CuriositiesView from './CuriositiesView';
@@ -26,6 +31,22 @@ import ChatView from './ChatView';
 const HospitalDashboard = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState('Home');
   const [headerTab, setHeaderTab] = useState('Dashboard');
+  const [appointments, setAppointments] = useState([
+    { id: 1, name: 'Amanda Silva', blood: 'O+', date: 'Hoje', time: '14:30', status: 'PENDENTE', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop' },
+    { id: 2, name: 'Carlos Santos', blood: 'A-', date: 'Amanhã', time: '09:00', status: 'PENDENTE', avatar: 'https://i.pravatar.cc/150?u=carlos' },
+  ]);
+
+  const handleUpdateAppointment = (id, newStatus) => {
+    setAppointments(appointments.map(apt => apt.id === id ? { ...apt, status: newStatus } : apt));
+  };
+
+  const [patientRequests, setPatientRequests] = useState([
+    { id: 1, name: 'Lucas P.', blood: 'O-', type: 'Emergência', location: 'Hospital Central', distance: '1.2 km', priority: 1, docs: 2 },
+    { id: 2, name: 'Maria F.', blood: 'A+', type: 'Urgente', location: 'Hospital Norte', distance: '3.5 km', priority: 2, docs: 1 },
+    { id: 3, name: 'Roberto S.', blood: 'O+', type: 'Programada', location: 'Clínica Sul', distance: '5.0 km', priority: 3, docs: 0 },
+  ]);
+
+  const sortedRequests = [...patientRequests].sort((a, b) => a.priority - b.priority);
 
   const menuItems = [
     { name: 'Home', icon: <LayoutDashboard size={20} /> },
@@ -202,6 +223,114 @@ const HospitalDashboard = ({ onLogout }) => {
                           </div>
                         ))}
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Appointments Card */}
+                  <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-50">
+                    <div className="flex justify-between items-center mb-6">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="text-brand-red" size={24} />
+                        <h3 className="text-xl font-bold text-gray-800">Agendamentos de Doadores</h3>
+                      </div>
+                      <span className="bg-orange-50 text-orange-600 text-[10px] font-bold px-3 py-1 rounded-md">
+                        {appointments.filter(a => a.status === 'PENDENTE').length} PENDENTES
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      {appointments.length === 0 && (
+                        <p className="text-gray-400 text-sm">Nenhum agendamento pendente no momento.</p>
+                      )}
+                      {appointments.map((apt) => (
+                        <div key={apt.id} className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50 border border-gray-100 transition-all hover:bg-gray-50">
+                          <div className="flex items-center gap-4">
+                            <img src={apt.avatar} alt={apt.name} className="w-12 h-12 rounded-full shadow-sm object-cover" />
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-gray-800">{apt.name}</span>
+                                <span className="text-brand-red text-xs font-bold bg-brand-red-light/30 px-2 py-0.5 rounded-md">{apt.blood}</span>
+                              </div>
+                              <p className="text-sm text-gray-500 mt-1">
+                                {apt.date} às {apt.time}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            {apt.status === 'PENDENTE' ? (
+                              <>
+                                <button 
+                                  onClick={() => handleUpdateAppointment(apt.id, 'ACEITO')}
+                                  className="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-500 hover:text-white transition-colors"
+                                  title="Aceitar Agendamento"
+                                >
+                                  <Check size={20} />
+                                </button>
+                                <button 
+                                  onClick={() => handleUpdateAppointment(apt.id, 'REJEITADO')}
+                                  className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors"
+                                  title="Rejeitar Agendamento"
+                                >
+                                  <X size={20} />
+                                </button>
+                              </>
+                            ) : (
+                              <span className={`text-[10px] font-bold px-3 py-1 rounded-md ${apt.status === 'ACEITO' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                {apt.status}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Network Requests (Prioridade Automática) */}
+                  <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-50">
+                    <div className="flex justify-between items-center mb-6">
+                      <div className="flex items-center gap-2">
+                        <AlertCircle className="text-brand-red" size={24} />
+                        <h3 className="text-xl font-bold text-gray-800">Solicitações da Rede</h3>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      {sortedRequests.map((req) => (
+                        <div key={req.id} className={`relative flex items-center justify-between p-4 rounded-2xl border transition-all ${req.type === 'Emergência' ? 'bg-red-50/50 border-red-200' : 'bg-gray-50/50 border-gray-100 hover:bg-gray-50'}`}>
+                          {req.type === 'Emergência' && (
+                            <span className="absolute -top-3 left-6 bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md animate-pulse flex items-center gap-1">
+                              <AlertTriangle size={10} />
+                              PRIORIDADE AUTOMÁTICA
+                            </span>
+                          )}
+                          <div className="flex items-center gap-4">
+                            <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-white shadow-sm ${req.type === 'Emergência' ? 'bg-red-500' : req.type === 'Urgente' ? 'bg-orange-500' : 'bg-blue-500'}`}>
+                              {req.blood}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-gray-800">{req.name}</span>
+                                {req.docs > 0 && (
+                                  <span className="flex items-center gap-1 text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md font-bold" title={`${req.docs} Documentos anexados`}>
+                                    <FileText size={10} /> {req.docs} docs
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm text-gray-500 mt-1">
+                                {req.location} • {req.distance}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex flex-col items-end gap-2">
+                            <span className={`text-[10px] font-bold px-3 py-1 rounded-md ${req.type === 'Emergência' ? 'bg-red-100 text-red-700' : req.type === 'Urgente' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
+                              {req.type.toUpperCase()}
+                            </span>
+                            <button className="text-xs text-brand-red font-bold hover:underline">Ver Detalhes</button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
 

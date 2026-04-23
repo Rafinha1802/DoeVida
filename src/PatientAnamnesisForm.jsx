@@ -5,7 +5,6 @@ import { User, Phone, ArrowRight, ChevronLeft, Building, Activity, FileText } fr
 const PatientAnamnesisForm = ({ onComplete, onCancel }) => {
   const [formData, setFormData] = useState({
     nomeResponsavel: '',
-    telefoneResponsavel: '',
     parentesco: '',
     hospital: '',
     prontuario: '',
@@ -25,7 +24,7 @@ const PatientAnamnesisForm = ({ onComplete, onCancel }) => {
 
   const isComplete = () => {
     const requiredFields = [
-      'nomeResponsavel', 'telefoneResponsavel', 'parentesco', 
+      'nomeResponsavel', 'parentesco', 
       'hospital', 'motivo', 'tipoDoacao', 'quantidade', 'urgencia'
     ];
     // Prontuário is optional
@@ -101,20 +100,7 @@ const PatientAnamnesisForm = ({ onComplete, onCancel }) => {
                 />
               </div>
 
-              <div className="space-y-3">
-                <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Telefone</label>
-                <input
-                  type="tel"
-                  name="telefoneResponsavel"
-                  value={formData.telefoneResponsavel}
-                  onChange={handleChange}
-                  placeholder="(00) 00000-0000"
-                  className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
-                  required
-                />
-              </div>
-
-              <div className="space-y-3">
+              <div className="space-y-3 md:col-span-2">
                 <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Grau de Parentesco</label>
                 <select 
                   name="parentesco"

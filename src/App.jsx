@@ -57,7 +57,7 @@ const App = () => {
   if (isScreening) {
     if (role === 'paciente') {
       return (
-        <PatientAnamnesisForm 
+        <PatientAnamnesisForm
           onComplete={(urgency) => {
             setPatientUrgency(urgency);
             setIsScreening(false);
@@ -246,14 +246,26 @@ const App = () => {
                 <div className="grid grid-cols-1 gap-6">
                   <div className="space-y-3">
                     <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">
-                      {role === 'hospital' ? 'CNPJ / E-mail Institucional' : 'E-mail / CPF'}
+                      E-mail
                     </label>
                     <input
-                      type="text"
-                      placeholder={role === 'hospital' ? "hospital@doavida.com" : "doador@email.com"}
+                      type="email"
+                      placeholder="seu@email.com"
                       className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
+                  {role === 'hospital' && (
+                    <div className="space-y-3">
+                      <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">
+                        CNPJ
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="00.000.000/0000-00"
+                        className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      />
+                    </div>
+                  )}
                   <div className="space-y-3">
                     <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Senha</label>
                     <input
