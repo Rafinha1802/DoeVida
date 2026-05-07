@@ -15,19 +15,31 @@ import {
   MapPin,
   Calendar,
   X,
-  Clock
+  Clock,
+  AlertTriangle,
+  Navigation,
+  HeartHandshake,
+  QrCode,
+  Download,
+  Share2,
+  Verified,
+  Droplet,
+  ArrowLeft
 } from 'lucide-react';
 import MapView from './MapView';
 import CuriositiesView from './CuriositiesView';
 import CommunityView from './CommunityView';
 import SettingsView from './SettingsView';
 import DonorActivityView from './DonorActivityView';
+import DonorCardView from './DonorCardView';
 
 const Dashboard = ({ onLogout }) => {
   const [status, setStatus] = useState('livre'); // 'livre' or 'ocupado'
   const [activeTab, setActiveTab] = useState('Home');
   const [headerTab, setHeaderTab] = useState('Dashboard');
   const [isScheduling, setIsScheduling] = useState(false);
+  const [showUrgentModal, setShowUrgentModal] = useState(false);
+  const [selectedUrgentCase, setSelectedUrgentCase] = useState(null);
   const [selectedHospital, setSelectedHospital] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
@@ -72,14 +84,20 @@ const Dashboard = ({ onLogout }) => {
       blood: 'O+',
       dist: '1.2 km distância',
       location: 'Hospital Pediátrico',
-      color: 'bg-red-500'
+      color: 'bg-red-500',
+      description: 'Uma emergência cirúrgica crítica requer sangue total Tipo O Positivo imediato. Seu perfil corresponde a esta solicitação. Sua contribuição pode salvar uma vida hoje.',
+      timeRemaining: '25 Minutos',
+      distance: '1.2 km'
     },
     {
-      type: 'Preparando Cirurgia',
+      type: 'Urgente',
       blood: 'A-',
       dist: '3.8 km distância',
-      location: 'Centro Metropolitano de Traumas',
-      color: 'bg-gray-200'
+      location: 'City General',
+      color: 'bg-gray-200',
+      description: 'Uma emergência cirúrgica crítica requer sangue total Tipo A Negativo imediato. Seu perfil corresponde a esta solicitação. Sua contribuição pode salvar uma vida hoje.',
+      timeRemaining: '42 Minutos',
+      distance: '3.2 Milhas'
     },
   ];
 
@@ -137,7 +155,18 @@ const Dashboard = ({ onLogout }) => {
       ) : activeTab === 'Comunidade' ? (
         <CommunityView userType="doador" onBack={() => setActiveTab('Home')} />
       ) : activeTab === 'Configurações' ? (
-        <SettingsView userType="doador" onBack={() => setActiveTab('Home')} />
+        <div className="flex-1 flex flex-col h-full bg-[#F8F9FA] overflow-y-auto">
+          <div className="shrink-0 p-8 lg:p-12 pb-0">
+            <button 
+              onClick={() => setActiveTab('Home')}
+              className="flex items-center gap-2 text-gray-400 hover:text-brand-red font-bold text-sm uppercase tracking-widest transition-colors group"
+            >
+              <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
+              Voltar ao Painel
+            </button>
+          </div>
+          <SettingsView userType="doador" onBack={() => setActiveTab('Home')} />
+        </div>
       ) : (
         <main className="flex-1 overflow-y-auto p-10 lg:p-16">
           <div className="max-w-[1600px] mx-auto">
@@ -157,10 +186,10 @@ const Dashboard = ({ onLogout }) => {
                   Minhas Atividades
                 </button>
                 <button 
-                  onClick={() => setHeaderTab('Análise')}
-                  className={`font-semibold pb-1 transition-all ${headerTab === 'Análise' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
+                  onClick={() => setHeaderTab('Minha Carteira')}
+                  className={`font-semibold pb-1 transition-all ${headerTab === 'Minha Carteira' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
                 >
-                  Análise
+                  Minha Carteira
                 </button>
               </div>
 
@@ -183,6 +212,8 @@ const Dashboard = ({ onLogout }) => {
 
             {headerTab === 'Minhas Atividades' ? (
               <DonorActivityView />
+            ) : headerTab === 'Minha Carteira' ? (
+              <DonorCardView />
             ) : (
             <>
             {/* Welcome Section */}
@@ -334,7 +365,14 @@ const Dashboard = ({ onLogout }) => {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                   {urgentCases.map((caseItem, idx) => (
-                    <div key={idx} className="bg-white rounded-[24px] p-6 border border-gray-100 flex flex-col h-full relative overflow-hidden group">
+                    <div 
+                      key={idx} 
+                      onClick={() => {
+                        setSelectedUrgentCase(caseItem);
+                        setShowUrgentModal(true);
+                      }}
+                      className="bg-white rounded-[24px] p-6 border border-gray-100 flex flex-col h-full relative overflow-hidden group cursor-pointer hover:shadow-lg transition-all"
+                    >
                       <div className="absolute top-0 left-0 w-1 h-full bg-brand-red opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       <div className="flex justify-between items-start mb-6">
                         <span className="text-brand-red font-bold text-sm">{caseItem.blood}</span>
@@ -442,6 +480,129 @@ const Dashboard = ({ onLogout }) => {
                         Confirmar Agendamento
                       </button>
                     </form>
+                  </motion.div>
+                </div>
+              )}
+            </AnimatePresence>
+
+            {/* Urgent Donation Modal */}
+            <AnimatePresence>
+              {showUrgentModal && selectedUrgentCase && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                    className="bg-white rounded-[40px] overflow-hidden flex flex-col lg:flex-row max-w-4xl w-full max-h-[90vh] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] relative"
+                  >
+                    {/* Close Button */}
+                    <button 
+                      onClick={() => setShowUrgentModal(false)}
+                      className="absolute top-6 right-6 z-[70] text-gray-400 hover:text-gray-800 transition-colors bg-white/80 backdrop-blur-md rounded-full p-2 shadow-lg lg:hidden"
+                    >
+                      <X size={20} />
+                    </button>
+
+                    {/* Left Content */}
+                    <div className="lg:w-[55%] p-8 lg:p-12 flex flex-col overflow-y-auto">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center relative">
+                          <div className="absolute inset-0 bg-red-500/10 rounded-xl rotate-45"></div>
+                          <AlertTriangle className="text-red-500 relative z-10" size={20} />
+                        </div>
+                        <span className="text-red-500 font-black text-xs uppercase tracking-[0.2em]">
+                          Prioridade 1 Emergência
+                        </span>
+                      </div>
+
+                      <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900 leading-[1.2] mb-8">
+                        Urgente {selectedUrgentCase.blood} Necessário no {selectedUrgentCase.location}
+                      </h2>
+
+                      <div className="bg-gray-50 rounded-[24px] p-6 border-l-[6px] border-red-500 mb-8 relative overflow-hidden">
+                        <div className="relative z-10">
+                          <p className="text-gray-600 text-base leading-relaxed">
+                            {selectedUrgentCase.description.split(selectedUrgentCase.blood)[0]}
+                            <span className="font-black text-gray-900">Tipo {selectedUrgentCase.blood}</span>
+                            {selectedUrgentCase.description.split(selectedUrgentCase.blood)[1]}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 mb-8">
+                        <div className="bg-gray-50 rounded-[20px] p-4">
+                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Tempo Restante</p>
+                          <p className="text-xl font-bold text-gray-900">{selectedUrgentCase.timeRemaining}</p>
+                        </div>
+                        <div className="bg-gray-50 rounded-[20px] p-4">
+                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Distância</p>
+                          <p className="text-xl font-bold text-gray-900">{selectedUrgentCase.distance}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3 mt-auto">
+                        <button 
+                          onClick={() => {
+                            setShowUrgentModal(false);
+                            // Logic to help could go here
+                          }}
+                          className="flex-1 bg-red-600 text-white py-4 rounded-[20px] font-bold text-lg hover:bg-red-700 transition-all shadow-xl shadow-red-600/20 flex items-center justify-center gap-2 active:scale-95"
+                        >
+                          <HeartHandshake size={20} />
+                          Eu posso ajudar
+                        </button>
+                        <button 
+                          onClick={() => setShowUrgentModal(false)}
+                          className="px-6 bg-gray-100 text-gray-400 py-4 rounded-[20px] font-bold text-lg hover:bg-gray-200 transition-all active:scale-95"
+                        >
+                          Agora não
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Right Map */}
+                    <div className="hidden lg:block lg:flex-1 relative bg-gray-200">
+                      <img 
+                        src="/map.png" 
+                        alt="Map" 
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-blue-900/10 mix-blend-multiply"></div>
+                      
+                      {/* Estimated Arrival Card */}
+                      <div className="absolute top-8 left-6 right-6 bg-white/90 backdrop-blur-xl p-4 rounded-[24px] flex items-center gap-4 shadow-2xl border border-white/50">
+                        <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-red-600/30">
+                          <Navigation size={24} />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Chegada Estimada</p>
+                          <p className="text-lg font-black text-gray-900 leading-tight">12 mins via Lake Shore Dr</p>
+                        </div>
+                      </div>
+
+                      {/* Map Marker */}
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-red-500 rounded-xl animate-ping opacity-20"></div>
+                          <div className="bg-red-600 w-14 h-14 rounded-[16px] flex items-center justify-center text-white shadow-2xl relative z-10 border-[3px] border-white">
+                            <div className="relative">
+                              <div className="w-6 h-6 border-[3px] border-white rounded flex items-center justify-center">
+                                <div className="w-3 h-0.5 bg-white rounded-full"></div>
+                                <div className="w-0.5 h-3 bg-white rounded-full absolute"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Desktop Close Button */}
+                    <button 
+                      onClick={() => setShowUrgentModal(false)}
+                      className="absolute top-6 right-6 z-[70] text-gray-400 hover:text-gray-800 transition-colors bg-white/80 backdrop-blur-md rounded-full p-2 shadow-lg hidden lg:flex"
+                    >
+                      <X size={20} />
+                    </button>
                   </motion.div>
                 </div>
               )}
