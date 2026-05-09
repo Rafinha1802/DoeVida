@@ -27,6 +27,7 @@ import CuriositiesView from './CuriositiesView';
 import HospitalAnalytics from './HospitalAnalytics';
 import SettingsView from './SettingsView';
 import ChatView from './ChatView';
+import HospitalInventoryView from './HospitalInventoryView';
 
 const HospitalDashboard = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState('Home');
@@ -173,6 +174,8 @@ const HospitalDashboard = ({ onLogout }) => {
 
             {headerTab === 'Análise' ? (
               <HospitalAnalytics />
+            ) : headerTab === 'Inventário' ? (
+              <HospitalInventoryView />
             ) : (
               <div className="flex gap-8 h-full">
                 <div className="flex-1 space-y-8">

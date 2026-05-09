@@ -18,6 +18,12 @@ const PatientDashboard = ({ onLogout, urgency }) => {
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
+  // New states for campaign
+  const [campaignGoal, setCampaignGoal] = useState('');
+  const [campaignMessage, setCampaignMessage] = useState('');
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [isPublished, setIsPublished] = useState(false);
+
   // Mock Data
   const campaign = { received: 3, goal: 5, donors: 3 };
   const progressPercent = Math.min((campaign.received / campaign.goal) * 100, 100);
@@ -119,7 +125,7 @@ const PatientDashboard = ({ onLogout, urgency }) => {
             {/* Header matches Donor Dashboard */}
             <header className="flex items-center justify-between mb-12">
               <div className="flex gap-8">
-                {['Dashboard', 'Meus Documentos', 'Histórico'].map(tab => (
+                {['Dashboard', 'Meus Documentos', 'Minha Campanha', 'Histórico'].map(tab => (
                   <button
                     key={tab}
                     onClick={() => setHeaderTab(tab)}
@@ -206,6 +212,108 @@ const PatientDashboard = ({ onLogout, urgency }) => {
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+            ) : headerTab === 'Minha Campanha' ? (
+              <div className="max-w-4xl mx-auto space-y-8 h-full">
+                <header className="mb-8">
+                  <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Sua Campanha de Doação</h1>
+                  <p className="text-gray-500 text-lg">Crie uma campanha personalizada para compartilhar com a comunidade e nas suas redes sociais.</p>
+                </header>
+
+                <div className="bg-white rounded-[32px] p-8 md:p-12 shadow-sm border border-gray-50">
+                  {isPublished ? (
+                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-10">
+                      <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-green-500">
+                        <Check size={48} />
+                      </div>
+                      <h2 className="text-3xl font-bold text-gray-900 mb-4">Campanha Publicada!</h2>
+                      <p className="text-gray-500 mb-8 max-w-md mx-auto">Sua campanha já está visível para a comunidade DoaVida. Agora compartilhe nas redes para alcançar mais pessoas.</p>
+                      <div className="flex flex-wrap items-center justify-center gap-4">
+                        <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl font-bold flex items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-pink-500/20">
+                          <Instagram size={20} /> Compartilhar no Instagram
+                        </button>
+                        <button className="px-6 py-3 bg-green-500 text-white rounded-2xl font-bold flex items-center gap-2 hover:bg-green-600 transition-colors shadow-lg shadow-green-500/20">
+                          <Smartphone size={20} /> Compartilhar no WhatsApp
+                        </button>
+                        <button className="px-6 py-3 bg-gray-100 text-gray-700 rounded-2xl font-bold flex items-center gap-2 hover:bg-gray-200 transition-colors">
+                          <Link size={20} /> Copiar Link
+                        </button>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <form onSubmit={(e) => { e.preventDefault(); if(agreeTerms) setIsPublished(true); }} className="space-y-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-gray-700">Meta de Bolsas</label>
+                          <input 
+                            type="number" 
+                            placeholder="Ex: 15" 
+                            required
+                            value={campaignGoal}
+                            onChange={(e) => setCampaignGoal(e.target.value)}
+                            className="w-full rounded-2xl bg-gray-50 border border-gray-100 p-4 text-gray-800 outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-gray-700">Hospital/Local</label>
+                          <input 
+                            type="text" 
+                            value="Hospital Central - São Paulo" 
+                            disabled
+                            className="w-full rounded-2xl bg-gray-100 border border-gray-100 p-4 text-gray-500 outline-none cursor-not-allowed"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-700">Sua Mensagem</label>
+                        <textarea 
+                          placeholder="Conte um pouco da sua história para emocionar e incentivar as pessoas a doarem..." 
+                          required
+                          value={campaignMessage}
+                          onChange={(e) => setCampaignMessage(e.target.value)}
+                          rows="4"
+                          className="w-full rounded-2xl bg-gray-50 border border-gray-100 p-4 text-gray-800 outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all resize-none"
+                        ></textarea>
+                      </div>
+
+                      <div className="bg-orange-50 p-6 rounded-[24px] border border-orange-100">
+                        <label className="flex items-start gap-4 cursor-pointer group">
+                          <div className="relative flex items-center justify-center mt-1">
+                            <input 
+                              type="checkbox" 
+                              checked={agreeTerms}
+                              onChange={(e) => setAgreeTerms(e.target.checked)}
+                              className="peer sr-only" 
+                            />
+                            <div className="w-6 h-6 border-2 border-orange-300 rounded-lg peer-checked:bg-brand-red peer-checked:border-brand-red transition-all flex items-center justify-center">
+                              <Check className="text-white opacity-0 peer-checked:opacity-100 w-4 h-4 transition-opacity" />
+                            </div>
+                          </div>
+                          <div>
+                            <span className="font-bold text-orange-800 block mb-1 text-sm">Termo de Consentimento e Privacidade</span>
+                            <span className="text-xs text-orange-600/80 leading-relaxed block">
+                              Estou ciente e concordo livremente que as informações fornecidas (incluindo meu nome, tipo sanguíneo, local de internação e história) se tornarão <strong>públicas</strong> na plataforma DoaVida e poderão ser compartilhadas por terceiros nas redes sociais com o único propósito de buscar doadores de sangue. Posso cancelar essa campanha a qualquer momento.
+                            </span>
+                          </div>
+                        </label>
+                      </div>
+
+                      <button 
+                        type="submit" 
+                        disabled={!agreeTerms}
+                        className={`w-full py-5 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all ${
+                          agreeTerms 
+                            ? 'bg-brand-red text-white hover:bg-red-700 shadow-xl shadow-brand-red/20 active:scale-[0.98]' 
+                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        }`}
+                      >
+                        <Share2 size={20} />
+                        Publicar e Compartilhar Campanha
+                      </button>
+                    </form>
+                  )}
                 </div>
               </div>
             ) : headerTab === 'Histórico' ? (

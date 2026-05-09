@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, ArrowRight, ChevronLeft, Mail, Lock, Phone, Map, Stethoscope } from 'lucide-react';
+import { MapPin, ArrowRight, ChevronLeft, Mail, Lock, Phone, Map, Stethoscope, Upload } from 'lucide-react';
 
 const AnamnesisForm = ({ onComplete, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -148,17 +148,31 @@ const AnamnesisForm = ({ onComplete, onCancel }) => {
               </div>
 
               {formData.jaDoou === 'Sim' && (
-                <div className="space-y-3 md:col-span-2">
-                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Data da última doação</label>
-                  <input
-                    type="date"
-                    name="dataUltimaDoacao"
-                    value={formData.dataUltimaDoacao}
-                    onChange={handleChange}
-                    className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
-                    required
-                  />
-                </div>
+                <>
+                  <div className="space-y-3 md:col-span-2">
+                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Data da última doação</label>
+                    <input
+                      type="date"
+                      name="dataUltimaDoacao"
+                      value={formData.dataUltimaDoacao}
+                      onChange={handleChange}
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-3 md:col-span-2">
+                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Comprovante de Doação / Cartão</label>
+                    <div className="w-full border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center p-6 bg-gray-50/50 hover:bg-gray-50 hover:border-brand-red transition-all cursor-pointer group relative">
+                      <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*,.pdf" />
+                      <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <Upload className="text-gray-400 group-hover:text-brand-red transition-colors" size={24} />
+                      </div>
+                      <p className="text-sm font-bold text-gray-700 text-center mb-1">Clique para enviar uma foto ou arquivo</p>
+                      <p className="text-xs text-gray-400 text-center">JPG, PNG ou PDF</p>
+                    </div>
+                  </div>
+                </>
               )}
 
               <div className="space-y-3 md:col-span-2">

@@ -88,9 +88,9 @@ const App = () => {
   ];
 
   return (
-    <div className="flex min-h-screen w-full flex-col md:flex-row font-sans text-gray-800">
+    <div className="flex h-screen w-full flex-col md:flex-row font-sans text-gray-800 overflow-hidden">
       {/* Lado Esquerdo - Hero com Carrossel */}
-      <div className="relative flex w-full flex-col justify-start pt-32 lg:pt-40 bg-gray-900 p-8 md:w-1/2 lg:p-16 overflow-hidden">
+      <div className="relative flex w-full flex-col justify-start pt-32 lg:pt-40 bg-gray-900 p-8 md:w-1/2 lg:p-16 overflow-hidden shrink-0">
         {/* Carrossel de Imagens */}
         {images.map((img, index) => (
           <div
@@ -151,11 +151,11 @@ const App = () => {
       </div>
 
       {/* Lado Direito - Formulário */}
-      <div className="flex w-full flex-col items-center justify-center bg-white p-8 md:w-1/2 lg:p-24 xl:p-32">
-        <div className="w-full max-w-lg space-y-10">
+      <div className="flex w-full flex-col items-center bg-white p-8 md:w-1/2 lg:p-16 xl:p-24 overflow-hidden">
+        <div className="w-full max-w-lg space-y-8 my-auto">
           {/* Header do Formulário */}
           <div className="space-y-4">
-            <h2 className="text-5xl font-extrabold tracking-tight text-gray-900">
+            <h2 className="text-4xl font-extrabold tracking-tight text-gray-900">
               {isLoginView ? 'Bem-vindo de volta' : 'Crie uma conta'}
             </h2>
             <p className="text-lg text-gray-500">
@@ -170,149 +170,149 @@ const App = () => {
           </div>
 
           {/* Seleção de Role */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             {roles.map((r) => (
               <button
                 key={r.id}
                 onClick={() => setRole(r.id)}
-                className={`flex flex-col items-center justify-center gap-2 rounded-xl border-2 p-4 transition-all ${role === r.id
+                className={`flex flex-col items-center justify-center gap-1 rounded-xl border-2 p-3 transition-all ${role === r.id
                   ? 'border-brand-red bg-brand-red-light text-brand-red'
                   : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'
                   }`}
               >
-                {r.icon}
-                <span className="text-sm font-semibold">{r.label}</span>
+                <div className="scale-90">{r.icon}</div>
+                <span className="text-xs font-semibold">{r.label}</span>
               </button>
             ))}
           </div>
 
           {/* Campos do Formulário */}
-          <form className="space-y-6" onSubmit={handleRegister}>
+          <form className="space-y-4" onSubmit={handleRegister}>
             {role === 'hospital' && !isLoginView ? (
               <>
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div className="space-y-3 sm:col-span-2">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Nome do Hospital</label>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="space-y-2 sm:col-span-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Nome do Hospital</label>
                     <input
                       type="text"
                       placeholder="Nome da instituição"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">CNPJ</label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">CNPJ</label>
                     <input
                       type="text"
                       placeholder="00.000.000/0000-00"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Telefone</label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Telefone</label>
                     <input
                       type="tel"
                       placeholder="(00) 0000-0000"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
-                  <div className="space-y-3 sm:col-span-2">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Nome do Responsável</label>
+                  <div className="space-y-2 sm:col-span-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Nome do Responsável</label>
                     <input
                       type="text"
                       placeholder="Nome do contato principal"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">E-mail Institucional</label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">E-mail Institucional</label>
                     <input
                       type="email"
                       placeholder="contato@hospital.com.br"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Senha</label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Senha</label>
                     <input
                       type="password"
                       placeholder="********"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
                 </div>
               </>
             ) : isLoginView ? (
               <>
-                <div className="grid grid-cols-1 gap-6">
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">
                       E-mail
                     </label>
                     <input
                       type="email"
                       placeholder="seu@email.com"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
                   {role === 'hospital' && (
-                    <div className="space-y-3">
-                      <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">
                         CNPJ
                       </label>
                       <input
                         type="text"
                         placeholder="00.000.000/0000-00"
-                        className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                        className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                       />
                     </div>
                   )}
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Senha</label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Senha</label>
                     <input
                       type="password"
                       placeholder="********"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
                 </div>
               </>
             ) : role === 'paciente' && !isLoginView ? (
               <>
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div className="space-y-3 sm:col-span-2">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Nome Completo</label>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="space-y-2 sm:col-span-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Nome Completo</label>
                     <input
                       type="text"
                       placeholder="Nome do paciente"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">CPF</label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">CPF</label>
                     <input
                       type="text"
                       placeholder="000.000.000-00"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Data de Nascimento</label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Data de Nascimento</label>
                     <input
                       type="date"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
-                  <div className="space-y-3 sm:col-span-2">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Tipo Sanguíneo</label>
+                  <div className="space-y-2 sm:col-span-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Tipo Sanguíneo</label>
                     <div className="flex gap-2">
-                      <select className="flex-1 rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
+                      <select className="flex-1 rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
                         <option value="">Tipo</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
                         <option value="AB">AB</option>
                         <option value="O">O</option>
                       </select>
-                      <select className="w-24 rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
+                      <select className="w-20 rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
                         <option value="">RH</option>
                         <option value="+">+</option>
                         <option value="-">-</option>
@@ -323,50 +323,50 @@ const App = () => {
               </>
             ) : (
               <>
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div className="space-y-3 sm:col-span-2">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Nome Completo</label>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="space-y-2 sm:col-span-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Nome Completo</label>
                     <input
                       type="text"
                       placeholder="Seu nome"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">CPF</label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">CPF</label>
                     <input
                       type="text"
                       placeholder="000.000.000-00"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Data de Nascimento</label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Data de Nascimento</label>
                     <input
                       type="date"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
                   </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Sexo</label>
-                    <select className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Sexo</label>
+                    <select className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
                       <option value="">Selecione</option>
                       <option value="M">Masculino</option>
                       <option value="F">Feminino</option>
                       <option value="O">Outro</option>
                     </select>
                   </div>
-                  <div className="space-y-3">
-                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Tipo Sanguíneo</label>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Tipo Sanguíneo</label>
                     <div className="flex gap-2">
-                      <select className="flex-1 rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
+                      <select className="flex-1 rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
                         <option value="">Tipo</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
                         <option value="AB">AB</option>
                         <option value="O">O</option>
                       </select>
-                      <select className="w-24 rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
+                      <select className="w-20 rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
                         <option value="">RH</option>
                         <option value="+">+</option>
                         <option value="-">-</option>
@@ -379,7 +379,7 @@ const App = () => {
 
             <button
               type="submit"
-              className="mt-8 w-full rounded-xl bg-brand-red p-5 font-bold text-lg text-white transition-all hover:bg-red-800 shadow-lg shadow-brand-red/20 active:scale-95"
+              className="mt-4 w-full rounded-xl bg-brand-red p-4 font-bold text-base text-white transition-all hover:bg-red-800 shadow-lg shadow-brand-red/20 active:scale-95"
             >
               {isLoginView ? 'Entrar' : 'Completar Registro'}
             </button>
@@ -407,14 +407,14 @@ const App = () => {
         </div>
 
         {/* Notificação Urgente (Bottom Right no Desktop) */}
-        <div className="fixed bottom-8 right-8 hidden lg:block">
-          <div className="flex items-center gap-4 rounded-xl border border-brand-red-light bg-brand-red-light/50 p-4 shadow-lg backdrop-blur-md">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-red text-white animate-pulse">
-              <Bell className="h-5 w-5" />
+        <div className="absolute bottom-6 right-6 hidden lg:block z-50">
+          <div className="flex items-center gap-3 rounded-xl border border-brand-red-light bg-white/80 p-3 shadow-xl backdrop-blur-md max-w-[280px]">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-red text-white animate-pulse">
+              <Bell className="h-4 w-4" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-brand-red">URGENTE: O- NEGATIVO</span>
-              <span className="text-xs text-gray-600">Hospital precisa de doadores urgentemente</span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-[10px] font-black text-brand-red uppercase tracking-tighter truncate">URGENTE: O- NEGATIVO</span>
+              <span className="text-[9px] text-gray-500 leading-tight">Hospital precisa de doadores agora</span>
             </div>
           </div>
         </div>

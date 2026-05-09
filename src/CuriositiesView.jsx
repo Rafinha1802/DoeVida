@@ -76,11 +76,11 @@ const CuriositiesView = ({ userType, onBack }) => {
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#F8F9FA] font-sans">
+    <div className="flex flex-col h-full w-full bg-[#F8F9FA] font-sans overflow-y-auto">
       {/* Cabeçalho de Curiosidades */}
-      <div className="bg-brand-red px-10 py-8 lg:px-16 lg:py-10 text-white relative overflow-hidden shadow-md">
-        <div className="absolute -top-10 right-0 opacity-10">
-          <svg width="250" height="250" viewBox="0 0 24 24" fill="currentColor">
+      <div className="bg-white px-10 py-12 lg:px-16 lg:py-16 text-gray-900 relative overflow-hidden shrink-0">
+        <div className="absolute top-0 right-0 opacity-[0.03] text-brand-red">
+          <svg width="400" height="400" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
           </svg>
         </div>
@@ -88,86 +88,93 @@ const CuriositiesView = ({ userType, onBack }) => {
         <div className="relative z-10 max-w-[1600px] mx-auto w-full flex flex-col items-start">
           <button 
             onClick={onBack}
-            className="flex items-center gap-2 text-white/80 hover:text-white font-medium mb-4 transition-colors"
+            className="flex items-center gap-2 text-gray-400 hover:text-brand-red font-bold text-sm uppercase tracking-widest mb-8 transition-colors group"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
             Voltar ao Painel
           </button>
           
-          <div className="flex items-center gap-4 mb-2">
-            <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
-              <Lightbulb size={24} />
+          <div className="flex items-center gap-6 mb-6">
+            <div className="bg-brand-red text-white p-4 rounded-[24px] shadow-xl shadow-brand-red/20">
+              <Lightbulb size={32} />
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight">Curiosidades do Sangue</h1>
+            <div>
+              <h1 className="text-5xl font-extrabold tracking-tight text-gray-900">Curiosidades</h1>
+              <p className="text-gray-400 text-lg mt-1 font-medium">Fatos que salvam vidas e transformam o mundo.</p>
+            </div>
           </div>
-          <p className="text-brand-red-light max-w-2xl text-base">
-            Descubra fatos fascinantes sobre doação de sangue e entenda como um pequeno gesto pode fazer uma enorme diferença.
-          </p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-10 lg:p-16 pb-20">
+      <div className="p-10 lg:p-16 pt-0 pb-20">
         <div className="max-w-4xl mx-auto w-full">
           
           {/* Seção de Adição (Apenas Hospital) */}
           {userType === 'hospital' && (
-            <div className="mb-10">
+            <div className="mb-12">
               {!isAdding ? (
                 <button 
                   onClick={() => setIsAdding(true)}
-                  className="w-full bg-white border-2 border-dashed border-gray-300 rounded-[24px] p-6 text-gray-500 font-bold hover:border-brand-red hover:text-brand-red hover:bg-brand-red-light/10 transition-all flex flex-col items-center justify-center gap-2"
+                  className="w-full bg-white border-2 border-dashed border-gray-200 rounded-[32px] p-10 text-gray-400 font-bold hover:border-brand-red hover:text-brand-red hover:bg-brand-red-light/10 transition-all flex flex-col items-center justify-center gap-4 group"
                 >
-                  <Plus size={32} />
-                  <span>Adicionar Nova Curiosidade</span>
+                  <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-brand-red-light transition-colors">
+                    <Plus size={32} />
+                  </div>
+                  <span className="text-lg">Adicionar Nova Curiosidade</span>
                 </button>
               ) : (
                 <motion.form 
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   onSubmit={handleAddSubmit}
-                  className="bg-white rounded-[24px] p-8 shadow-lg border border-gray-100"
+                  className="bg-white rounded-[40px] p-10 shadow-xl border border-gray-100"
                 >
-                  <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                    <Lightbulb size={24} className="text-brand-red" />
-                    Nova Curiosidade
-                  </h3>
-                  
-                  <div className="space-y-4">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-12 h-12 bg-brand-red-light/30 rounded-2xl flex items-center justify-center text-brand-red">
+                      <Lightbulb size={24} />
+                    </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Pergunta</label>
+                      <h3 className="text-2xl font-bold text-gray-900">Nova Curiosidade</h3>
+                      <p className="text-sm text-gray-400 font-medium">Compartilhe conhecimento com a rede.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3">Pergunta Impactante</label>
                       <input 
                         type="text" 
                         value={newQuestion}
                         onChange={(e) => setNewQuestion(e.target.value)}
                         placeholder="Ex: Pode doar sangue menstruada?"
-                        className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
+                        className="w-full rounded-2xl bg-gray-50 border border-gray-100 p-5 outline-none ring-brand-red/20 focus:ring-4 focus:bg-white transition-all font-bold text-gray-900"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 uppercase tracking-wide mb-2">Resposta</label>
+                      <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3">Resposta Detalhada</label>
                       <textarea 
                         value={newAnswer}
                         onChange={(e) => setNewAnswer(e.target.value)}
                         placeholder="A resposta detalhada para a curiosidade..."
                         rows={4}
-                        className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all resize-none"
+                        className="w-full rounded-2xl bg-gray-50 border border-gray-100 p-5 outline-none ring-brand-red/20 focus:ring-4 focus:bg-white transition-all resize-none font-medium text-gray-700"
                         required
                       />
                     </div>
                   </div>
                   
-                  <div className="mt-6 flex justify-end gap-3">
+                  <div className="mt-8 flex justify-end gap-4">
                     <button 
                       type="button"
                       onClick={() => setIsAdding(false)}
-                      className="px-6 py-3 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition-colors"
+                      className="px-8 py-4 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition-colors"
                     >
                       Cancelar
                     </button>
                     <button 
                       type="submit"
-                      className="px-6 py-3 rounded-xl font-bold bg-brand-red text-white hover:bg-red-700 transition-colors shadow-lg shadow-brand-red/20"
+                      className="px-8 py-4 rounded-xl font-bold bg-brand-red text-white hover:bg-red-700 transition-all shadow-xl shadow-brand-red/20 active:scale-95"
                     >
                       Salvar Curiosidade
                     </button>
@@ -178,26 +185,26 @@ const CuriositiesView = ({ userType, onBack }) => {
           )}
 
           {/* Lista de Curiosidades */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             {curiosities.map((item) => (
               <motion.div 
                 key={item.id}
                 layout
-                className={`bg-white rounded-[24px] border border-gray-100 overflow-hidden transition-all ${
-                  openId === item.id ? 'shadow-xl ring-2 ring-brand-red/20' : 'shadow-sm hover:shadow-md'
+                className={`bg-white rounded-[32px] border border-gray-100 overflow-hidden transition-all ${
+                  openId === item.id ? 'shadow-2xl ring-1 ring-brand-red/10' : 'shadow-sm hover:shadow-md'
                 }`}
               >
                 <button 
                   onClick={() => toggleAccordion(item.id)}
-                  className="w-full p-6 flex items-center justify-between text-left gap-4"
+                  className="w-full p-8 flex items-center justify-between text-left gap-6"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className={`p-3 rounded-2xl transition-colors ${
-                      openId === item.id ? 'bg-brand-red text-white' : 'bg-gray-50 text-brand-red'
+                  <div className="flex items-center gap-6">
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${
+                      openId === item.id ? 'bg-brand-red text-white shadow-lg shadow-brand-red/30' : 'bg-gray-50 text-brand-red'
                     }`}>
                       {item.icon}
                     </div>
-                    <span className={`text-lg font-bold transition-colors ${
+                    <span className={`text-xl font-bold transition-colors ${
                       openId === item.id ? 'text-brand-red' : 'text-gray-800'
                     }`}>
                       {item.question}
@@ -206,8 +213,9 @@ const CuriositiesView = ({ userType, onBack }) => {
                   <motion.div
                     animate={{ rotate: openId === item.id ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
+                    className={`p-2 rounded-full ${openId === item.id ? 'bg-brand-red-light/50 text-brand-red' : 'text-gray-300'}`}
                   >
-                    <ChevronDown size={24} className={openId === item.id ? 'text-brand-red' : 'text-gray-400'} />
+                    <ChevronDown size={24} />
                   </motion.div>
                 </button>
                 
@@ -219,8 +227,10 @@ const CuriositiesView = ({ userType, onBack }) => {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: "easeInOut" }}
                     >
-                      <div className="p-6 pt-0 text-gray-600 leading-relaxed border-t border-gray-50 mt-2">
-                        {item.answer}
+                      <div className="p-8 pt-0 text-gray-500 text-lg leading-relaxed border-t border-gray-50 mt-4">
+                        <div className="bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
+                          {item.answer}
+                        </div>
                       </div>
                     </motion.div>
                   )}
