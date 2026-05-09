@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { QrCode, Download, Share2, Verified, Droplet, Calendar, Trophy, Star, Coffee, Zap, ShieldCheck, Truck, CreditCard, MapPin, CheckCircle2 } from 'lucide-react';
@@ -7,6 +8,13 @@ const DonorCardView = () => {
   const [address, setAddress] = useState({ cep: '', street: '', number: '', city: '' });
   const [isPaid, setIsPaid] = useState(false);
 
+=======
+import React from 'react';
+import { motion } from 'framer-motion';
+import { QrCode, Download, Share2, Verified, Droplet, Calendar, Trophy, Star, Coffee, Zap, ShieldCheck } from 'lucide-react';
+
+const DonorCardView = () => {
+>>>>>>> deff5666f1b536483bfc58093f2be80175b2785c
   const donorInfo = {
     name: "Amanda Oliveira",
     bloodType: "O+",
@@ -117,6 +125,7 @@ const DonorCardView = () => {
         </motion.div>
 
         {/* Info & Actions */}
+<<<<<<< HEAD
         <div className="flex-1 w-full max-w-md space-y-4">
           <div className="bg-white rounded-[24px] p-6 border border-gray-100 shadow-sm space-y-4">
             <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-2xl">
@@ -146,11 +155,43 @@ const DonorCardView = () => {
               </button>
               <button className="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold text-sm hover:bg-gray-200 transition-all active:scale-95">
                 <Share2 size={18} />
+=======
+        <div className="flex-1 w-full max-w-md space-y-6">
+          <div className="bg-white rounded-[32px] p-8 border border-gray-100 shadow-sm space-y-6">
+            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
+              <div className="w-12 h-12 bg-brand-red-light rounded-xl flex items-center justify-center text-brand-red">
+                <Calendar size={24} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Última Doação</p>
+                <p className="text-lg font-bold text-gray-800">{donorInfo.lastDonation}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
+              <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
+                <Droplet size={24} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Vidas Salvas</p>
+                <p className="text-lg font-bold text-gray-800">{donorInfo.totalLivesSaved} Vidas</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <button className="flex items-center justify-center gap-2 bg-brand-red text-white py-4 rounded-2xl font-bold hover:bg-red-700 transition-all active:scale-95 shadow-lg shadow-brand-red/20">
+                <Download size={20} />
+                Baixar
+              </button>
+              <button className="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-4 rounded-2xl font-bold hover:bg-gray-200 transition-all active:scale-95">
+                <Share2 size={20} />
+>>>>>>> deff5666f1b536483bfc58093f2be80175b2785c
                 Compartilhar
               </button>
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* Physical Card Request Section */}
           <div className="bg-white rounded-[24px] p-6 border border-gray-100 shadow-sm transition-all">
             {!wantsPhysicalCard ? (
@@ -237,6 +278,8 @@ const DonorCardView = () => {
             )}
           </div>
 
+=======
+>>>>>>> deff5666f1b536483bfc58093f2be80175b2785c
           <p className="text-center text-xs text-gray-400 leading-relaxed px-6">
             Esta carteirinha digital é válida em todos os hemocentros parceiros da rede DoaVida. Apresente o QR Code no momento do atendimento.
           </p>

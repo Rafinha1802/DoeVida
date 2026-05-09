@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Heart, Clock, AlertTriangle, LogOut, Info, ShieldCheck, Share2,
   MessageSquare, Users, Lightbulb, LayoutDashboard, Bell, Settings,
-  Calendar, Droplets, History, Check, Smartphone, Instagram, Link,
-  Edit, X, User, Activity, FileText, UploadCloud, Search, HelpCircle, TrendingUp, MapPin
+  Calendar, Droplets, History, Check, Smartphone, Link,
+  Edit, X, User, Activity, FileText, UploadCloud, Search, HelpCircle, TrendingUp, MapPin, ArrowLeft, Megaphone, CheckCircle2, Save
 } from 'lucide-react';
 import CuriositiesView from './CuriositiesView';
 import CommunityView from './CommunityView';
@@ -17,6 +17,16 @@ const PatientDashboard = ({ onLogout, urgency }) => {
   const [patientStatus, setPatientStatus] = useState(urgency || 'Urgente');
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showConsentModal, setShowConsentModal] = useState(false);
+  const [hasConsented, setHasConsented] = useState(false);
+  const [campaignForm, setCampaignForm] = useState({
+    title: 'Campanha do Rafael',
+    bloodType: 'O-',
+    urgency: 'Urgente',
+    hospital: 'Hospital Português',
+    description: '',
+    isActive: false
+  });
 
   // New states for campaign
   const [campaignGoal, setCampaignGoal] = useState('');
@@ -105,7 +115,18 @@ const PatientDashboard = ({ onLogout, urgency }) => {
       ) : activeTab === 'Chat' ? (
         <ChatView userType="paciente" onBack={() => setActiveTab('Home')} />
       ) : activeTab === 'Configurações' ? (
-        <SettingsView userType="paciente" onBack={() => setActiveTab('Home')} />
+        <div className="flex-1 flex flex-col h-full bg-[#F8F9FA] overflow-y-auto">
+          <div className="shrink-0 p-8 lg:p-12 pb-0">
+            <button 
+              onClick={() => setActiveTab('Home')}
+              className="flex items-center gap-2 text-gray-400 hover:text-brand-red font-bold text-sm uppercase tracking-widest transition-colors group"
+            >
+              <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
+              Voltar ao Painel
+            </button>
+          </div>
+          <SettingsView userType="paciente" onBack={() => setActiveTab('Home')} />
+        </div>
       ) : (
         <main className="flex-1 overflow-y-auto p-10 lg:p-16 relative">
           <div className="max-w-[1600px] mx-auto">
@@ -122,10 +143,13 @@ const PatientDashboard = ({ onLogout, urgency }) => {
               </motion.div>
             )}
 
-            {/* Header matches Donor Dashboard */}
             <header className="flex items-center justify-between mb-12">
               <div className="flex gap-8">
+<<<<<<< HEAD
                 {['Dashboard', 'Meus Documentos', 'Minha Campanha', 'Histórico'].map(tab => (
+=======
+                {['Dashboard', 'Meus Documentos', 'Histórico', 'Criar Minha Campanha'].map(tab => (
+>>>>>>> deff5666f1b536483bfc58093f2be80175b2785c
                   <button
                     key={tab}
                     onClick={() => setHeaderTab(tab)}
@@ -336,6 +360,153 @@ const PatientDashboard = ({ onLogout, urgency }) => {
                   ))}
                 </div>
               </div>
+            ) : headerTab === 'Criar Minha Campanha' ? (
+              <div className="max-w-4xl space-y-8 pb-20">
+                <header className="mb-8">
+                  <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Minha Campanha de Doação</h1>
+                  <p className="text-gray-500 text-lg">Personalize sua campanha para atrair doadores heróis.</p>
+                </header>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <div className="lg:col-span-2 space-y-8">
+                    <div className="bg-white rounded-[40px] p-10 shadow-sm border border-gray-100">
+                      <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-50">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-brand-red-light rounded-xl flex items-center justify-center text-brand-red">
+                            <Megaphone size={20} />
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-900">Configurações da Campanha</h3>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] font-black uppercase tracking-widest ${campaignForm.isActive ? 'text-emerald-500' : 'text-gray-400'}`}>
+                            {campaignForm.isActive ? 'Ativa' : 'Inativa'}
+                          </span>
+                          <button 
+                            onClick={() => {
+                              if (!campaignForm.isActive) setShowConsentModal(true);
+                              else setCampaignForm(prev => ({ ...prev, isActive: false }));
+                            }}
+                            className={`w-12 h-6 rounded-full transition-colors relative ${campaignForm.isActive ? 'bg-emerald-500' : 'bg-gray-200'}`}
+                          >
+                            <motion.div 
+                              animate={{ x: campaignForm.isActive ? 26 : 2 }}
+                              className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm"
+                            />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-6">
+                        <div className="space-y-2">
+                          <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Título da Campanha</label>
+                          <input 
+                            type="text"
+                            value={campaignForm.title}
+                            onChange={(e) => setCampaignForm(prev => ({ ...prev, title: e.target.value }))}
+                            placeholder="Ex: Urgente: Rafael precisa de doadores O-"
+                            className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all font-bold"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Tipo Sanguíneo</label>
+                            <select 
+                              value={campaignForm.bloodType}
+                              onChange={(e) => setCampaignForm(prev => ({ ...prev, bloodType: e.target.value }))}
+                              className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all font-bold appearance-none cursor-pointer"
+                            >
+                              {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(type => (
+                                <option key={type} value={type}>{type}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Urgência</label>
+                            <select 
+                              value={campaignForm.urgency}
+                              onChange={(e) => setCampaignForm(prev => ({ ...prev, urgency: e.target.value }))}
+                              className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all font-bold appearance-none cursor-pointer"
+                            >
+                              <option value="Estável">Estável</option>
+                              <option value="Urgente">Urgente</option>
+                              <option value="Emergência">Emergência</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Hospital de Internação</label>
+                          <div className="relative">
+                            <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                            <input 
+                              type="text"
+                              value={campaignForm.hospital}
+                              onChange={(e) => setCampaignForm(prev => ({ ...prev, hospital: e.target.value }))}
+                              placeholder="Nome do hospital"
+                              className="w-full bg-gray-50 border border-gray-100 rounded-2xl pl-14 pr-6 py-4 text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all font-bold"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Sua História (Opcional)</label>
+                          <textarea 
+                            value={campaignForm.description}
+                            onChange={(e) => setCampaignForm(prev => ({ ...prev, description: e.target.value }))}
+                            placeholder="Conte um pouco sobre por que você precisa da doação..."
+                            rows={4}
+                            className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-red/20 focus:bg-white transition-all font-medium resize-none"
+                          />
+                        </div>
+                      </div>
+
+                      <button 
+                        onClick={() => {
+                          // Logic to save
+                          alert('Campanha salva com sucesso!');
+                        }}
+                        className="mt-10 w-full bg-brand-red text-white py-5 rounded-[24px] font-bold text-xl hover:bg-red-700 transition-all shadow-xl shadow-brand-red/20 active:scale-95 flex items-center justify-center gap-3"
+                      >
+                        <Save size={24} />
+                        Salvar Alterações
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-8">
+                    <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
+                      <h4 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-6">Prévia do Card</h4>
+                      <div className="bg-white rounded-[24px] p-6 border border-gray-100 flex flex-col h-full relative overflow-hidden shadow-lg ring-1 ring-brand-red/5">
+                        <div className={`absolute top-0 left-0 w-1 h-full bg-brand-red ${campaignForm.isActive ? 'opacity-100' : 'opacity-20'}`}></div>
+                        <div className="flex justify-between items-start mb-6">
+                          <span className="text-brand-red font-bold text-sm bg-brand-red-light/30 px-2 py-0.5 rounded-md">Tipo {campaignForm.bloodType}</span>
+                          <span className="text-[10px] text-gray-400 font-medium">{campaignForm.urgency}</span>
+                        </div>
+                        <div className="mb-8">
+                          <h4 className="font-bold text-lg leading-tight mb-1">{campaignForm.title}</h4>
+                          <p className="text-xs text-gray-400">{campaignForm.hospital}</p>
+                        </div>
+                        <button className={`w-full py-3 rounded-xl text-xs font-bold transition-all bg-brand-red text-white hover:bg-red-700`}>
+                          Responda agora
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="bg-blue-50 rounded-[32px] p-8 border border-blue-100">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 bg-white rounded-lg text-blue-600">
+                          <Info size={20} />
+                        </div>
+                        <h4 className="font-bold text-blue-900 text-sm">Dica de Sucesso</h4>
+                      </div>
+                      <p className="text-xs text-blue-700 leading-relaxed">
+                        Campanhas com histórias pessoais e fotos reais costumam atrair <strong>3x mais doadores</strong>. Não tenha medo de compartilhar sua jornada!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ) : (
               <>
                 {/* Welcome Section */}
@@ -539,6 +710,88 @@ const PatientDashboard = ({ onLogout, urgency }) => {
         </main>
       )}
 
+      {/* Consent Modal for Campaign */}
+      <AnimatePresence>
+        {showConsentModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-white rounded-[40px] p-10 max-w-xl w-full shadow-2xl relative"
+            >
+              <button 
+                onClick={() => setShowConsentModal(false)}
+                className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 transition-colors bg-gray-100 rounded-full p-2"
+              >
+                <X size={20} />
+              </button>
+
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
+                  <Info size={28} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Termos de Privacidade</h2>
+                  <p className="text-sm text-gray-400">Proteção de Dados (LGPD)</p>
+                </div>
+              </div>
+
+              <div className="space-y-4 mb-8 text-gray-600 leading-relaxed">
+                <p>Ao ativar sua campanha, você concorda em tornar público para a rede de doadores do <strong>DoaVida</strong>:</p>
+                <ul className="list-disc pl-5 space-y-2 text-sm font-medium">
+                  <li>Seu nome completo e foto de perfil;</li>
+                  <li>Seu tipo sanguíneo e nível de urgência;</li>
+                  <li>O hospital onde você se encontra internado.</li>
+                </ul>
+                <p className="text-sm italic bg-gray-50 p-4 rounded-xl border border-gray-100">
+                  Estes dados são essenciais para que doadores compatíveis possam encontrá-lo e realizar a doação. Você pode desativar a campanha a qualquer momento.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative">
+                    <input 
+                      type="checkbox" 
+                      className="peer hidden" 
+                      checked={hasConsented}
+                      onChange={(e) => setHasConsented(e.target.checked)}
+                    />
+                    <div className="w-6 h-6 border-2 border-gray-200 rounded-md peer-checked:bg-brand-red peer-checked:border-brand-red transition-all flex items-center justify-center">
+                      <CheckCircle2 size={16} className="text-white opacity-0 peer-checked:opacity-100 transition-opacity" />
+                    </div>
+                  </div>
+                  <span className="text-sm font-bold text-gray-700 group-hover:text-gray-900 transition-colors">
+                    Eu li e concordo em divulgar minhas informações para a rede de doadores.
+                  </span>
+                </label>
+
+                <div className="flex gap-4 pt-4">
+                  <button 
+                    onClick={() => {
+                      if (hasConsented) {
+                        setCampaignForm(prev => ({ ...prev, isActive: true }));
+                        setShowConsentModal(false);
+                      }
+                    }}
+                    disabled={!hasConsented}
+                    className={`flex-1 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg ${hasConsented ? 'bg-brand-red text-white hover:bg-red-700 shadow-brand-red/20' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+                  >
+                    Publicar Campanha
+                  </button>
+                  <button 
+                    onClick={() => setShowConsentModal(false)}
+                    className="px-8 py-4 bg-gray-100 text-gray-500 rounded-2xl font-bold text-lg hover:bg-gray-200 transition-all"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
