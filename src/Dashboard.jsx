@@ -194,14 +194,7 @@ const Dashboard = ({ onLogout }) => {
               </div>
 
               <div className="flex items-center gap-6">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                  <input
-                    type="text"
-                    placeholder="Pesquise aqui"
-                    className="bg-gray-100 rounded-full py-2 pl-10 pr-4 outline-none w-64 focus:ring-2 focus:ring-brand-red/20 transition-all"
-                  />
-                </div>
+
                 <button className="text-gray-400 hover:text-gray-600 relative">
                   <Bell size={20} />
                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand-red rounded-full border-2 border-white"></span>

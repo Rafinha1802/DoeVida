@@ -15,18 +15,17 @@ import {
   Maximize2,
   Filter,
   ChevronRight,
-  MessageSquare,
   Calendar,
   Check,
   X,
   AlertTriangle,
-  FileText
+  FileText,
+  Heart
 } from 'lucide-react';
 import MapView from './MapView';
 import CuriositiesView from './CuriositiesView';
 import HospitalAnalytics from './HospitalAnalytics';
 import SettingsView from './SettingsView';
-import ChatView from './ChatView';
 import HospitalInventoryView from './HospitalInventoryView';
 
 const HospitalDashboard = ({ onLogout }) => {
@@ -52,7 +51,6 @@ const HospitalDashboard = ({ onLogout }) => {
   const menuItems = [
     { name: 'Home', icon: <LayoutDashboard size={20} /> },
     { name: 'Mapa', icon: <Map size={20} /> },
-    { name: 'Chat', icon: <MessageSquare size={20} /> },
     { name: 'Curiosidades', icon: <Lightbulb size={20} /> },
     { name: 'Configurações', icon: <Settings size={20} /> },
   ];
@@ -64,10 +62,6 @@ const HospitalDashboard = ({ onLogout }) => {
     { type: 'B+ Positivo', units: 18, status: 'Positivo', color: 'bg-blue-600' },
   ];
 
-  const responses = [
-    { name: 'Marcus T.', dist: '2.4 km distância', status: 'Incoming', avatar: 'https://i.pravatar.cc/150?u=marcus' },
-    { name: 'Sarah L.', dist: 'Confirmando match...', status: '', avatar: 'https://i.pravatar.cc/150?u=sarah' },
-  ];
 
   return (
     <div className="flex h-screen w-full bg-[#F8F9FA] overflow-hidden font-sans">
@@ -101,7 +95,9 @@ const HospitalDashboard = ({ onLogout }) => {
         </nav>
 
         <div className="mt-auto pt-6 space-y-2">
-          <button className="w-full bg-brand-red text-white py-4 rounded-xl font-bold hover:bg-red-700 transition-colors shadow-lg shadow-brand-red/20 mb-6">
+          <button 
+            onClick={() => { setActiveTab('Home'); setHeaderTab('Inventário'); }}
+            className="w-full bg-brand-red text-white py-4 rounded-xl font-bold hover:bg-red-700 transition-colors shadow-lg shadow-brand-red/20 mb-6">
             Poste alguma urgência
           </button>
           <div className="space-y-2 border-t border-gray-100 pt-6">
@@ -125,8 +121,6 @@ const HospitalDashboard = ({ onLogout }) => {
         <MapView userType="hospital" onBack={() => setActiveTab('Home')} />
       ) : activeTab === 'Curiosidades' ? (
         <CuriositiesView userType="hospital" onBack={() => setActiveTab('Home')} />
-      ) : activeTab === 'Chat' ? (
-        <ChatView userType="hospital" onBack={() => setActiveTab('Home')} />
       ) : activeTab === 'Configurações' ? (
         <SettingsView userType="hospital" onBack={() => setActiveTab('Home')} />
       ) : (
@@ -156,14 +150,7 @@ const HospitalDashboard = ({ onLogout }) => {
               </div>
 
               <div className="flex items-center gap-6">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                  <input
-                    type="text"
-                    placeholder="Pesquise aqui"
-                    className="bg-gray-100 rounded-full py-2 pl-10 pr-4 outline-none w-64 focus:ring-2 focus:ring-brand-red/20 transition-all"
-                  />
-                </div>
+
                 <button className="text-gray-400 hover:text-gray-600 relative">
                   <Bell size={20} />
                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand-red rounded-full border-2 border-white"></span>
@@ -201,30 +188,44 @@ const HospitalDashboard = ({ onLogout }) => {
                       </div>
                     </div>
 
-                    {/* Responses Card */}
-                    <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-50">
+                    {/* Active Campaign Card */}
+                    <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-50 relative overflow-hidden flex flex-col justify-between">
                       <div className="flex justify-between items-center mb-6">
-                        <div>
-                          <h3 className="text-lg font-bold text-gray-800">Respostas</h3>
-                          <p className="text-xs text-gray-400">Requisitos Ativos: #7721-B</p>
+                        <div className="flex items-center gap-2">
+                          <Heart className="text-brand-red fill-brand-red/20" size={24} />
+                          <h3 className="text-lg font-bold text-gray-800">Campanha Ativa</h3>
                         </div>
-                        <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-3 py-1 rounded-md">
-                          8 MATCHES
+                        <span className="bg-green-50 text-green-600 text-[10px] font-bold px-3 py-1 rounded-md">
+                          EM ANDAMENTO
                         </span>
                       </div>
-                      <div className="space-y-4">
-                        {responses.map((resp, idx) => (
-                          <div key={idx} className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50/50">
-                            <img src={resp.avatar} alt={resp.name} className="w-10 h-10 rounded-full" />
-                            <div className="flex-1">
-                              <div className="flex justify-between items-center">
-                                <span className="font-bold text-sm text-gray-800">{resp.name}</span>
-                                <span className={`w-2 h-2 rounded-full ${idx === 0 ? 'bg-green-500' : 'bg-gray-300'}`}></span>
-                              </div>
-                              <p className="text-[10px] text-gray-400">{resp.dist} {resp.status && `ÔÇó ${resp.status}`}</p>
-                            </div>
+                      
+                      <div className="space-y-4 relative z-10 flex-1">
+                        <div>
+                          <h4 className="font-bold text-gray-800 text-xl">Junho Vermelho</h4>
+                          <p className="text-sm text-gray-400 mt-1">Meta: 500 bolsas de sangue</p>
+                        </div>
+                        
+                        <div className="pt-4 mt-auto">
+                          <div className="flex justify-between text-sm font-bold text-gray-600 mb-2">
+                            <span>Progresso</span>
+                            <span className="text-brand-red">70%</span>
                           </div>
-                        ))}
+                          <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+                            <motion.div 
+                              initial={{ width: 0 }} 
+                              animate={{ width: '70%' }} 
+                              transition={{ duration: 1.5 }}
+                              className="h-full bg-brand-red rounded-full"
+                            />
+                          </div>
+                          <p className="text-xs text-gray-400 font-medium mt-2 text-right">350 bolsas arrecadadas</p>
+                        </div>
+                      </div>
+                      
+                      {/* Background Decoration */}
+                      <div className="absolute right-[-30px] top-[-30px] opacity-[0.03] text-brand-red">
+                        <Heart size={150} />
                       </div>
                     </div>
                   </div>

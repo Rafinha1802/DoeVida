@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   AlertTriangle, 
   Clock, 
@@ -8,10 +8,12 @@ import {
   Calendar,
   ChevronRight,
   TrendingUp,
-  TrendingDown
+  TrendingDown,
+  X
 } from 'lucide-react';
 
 const HospitalInventoryView = () => {
+  const [isUrgentModalOpen, setIsUrgentModalOpen] = useState(false);
   const bloodInventory = [
     { type: 'O+', units: 45, max: 100, status: 'Adequado', trend: 'up' },
     { type: 'O-', units: 5, max: 50, status: 'Crítico', trend: 'down' },
@@ -55,7 +57,9 @@ const HospitalInventoryView = () => {
           <h2 className="text-2xl font-bold text-gray-800">Gestão de Estoque</h2>
           <p className="text-gray-500 text-sm mt-1">Monitore níveis de sangue, validades e alertas.</p>
         </div>
-        <button className="bg-brand-red text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-red-700 transition-colors shadow-lg shadow-brand-red/20">
+        <button 
+          onClick={() => setIsUrgentModalOpen(true)}
+          className="bg-brand-red text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-red-700 transition-colors shadow-lg shadow-brand-red/20">
           <Plus size={20} />
           Solicitar Sangue Urgente
         </button>
@@ -215,6 +219,94 @@ const HospitalInventoryView = () => {
           </div>
         </div>
       </div>
+      <AnimatePresence>
+        {isUrgentModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-[32px] p-8 md:p-10 w-full max-w-lg shadow-2xl relative"
+            >
+              <button 
+                onClick={() => setIsUrgentModalOpen(false)}
+                className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 transition-colors bg-gray-100 rounded-full p-2"
+              >
+                <X size={20} />
+              </button>
+              
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 bg-brand-red-light/30 rounded-2xl flex items-center justify-center text-brand-red">
+                  <AlertTriangle size={24} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Solicitação Urgente</h2>
+                  <p className="text-sm text-gray-500">Notifique doadores compatíveis próximos</p>
+                </div>
+              </div>
+
+              <form onSubmit={(e) => { e.preventDefault(); setIsUrgentModalOpen(false); alert('Solicitação enviada com sucesso!'); }} className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Tipo Sanguíneo</label>
+                    <select 
+                      required
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none focus:ring-2 focus:ring-brand-red/20 transition-all appearance-none"
+                    >
+                      <option value="">Selecione...</option>
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Qtd. Bolsas</label>
+                    <input 
+                      type="number" 
+                      required
+                      min="1"
+                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none focus:ring-2 focus:ring-brand-red/20 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Nível de Urgência</label>
+                  <select 
+                    required
+                    className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none focus:ring-2 focus:ring-brand-red/20 transition-all appearance-none"
+                  >
+                    <option value="emergencia">Emergência (Imediato)</option>
+                    <option value="alta">Alta (Hoje)</option>
+                    <option value="media">Média (24h-48h)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Motivo/Observação (Opcional)</label>
+                  <textarea 
+                    rows="3"
+                    className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none focus:ring-2 focus:ring-brand-red/20 transition-all resize-none"
+                    placeholder="Ex: Paciente em cirurgia cardíaca..."
+                  ></textarea>
+                </div>
+
+                <button 
+                  type="submit"
+                  className="w-full bg-brand-red text-white py-4 rounded-xl font-bold text-lg hover:bg-red-700 transition-colors shadow-lg shadow-brand-red/20 mt-4"
+                >
+                  Disparar Alerta na Rede
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

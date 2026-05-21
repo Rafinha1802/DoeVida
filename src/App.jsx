@@ -3,8 +3,6 @@ import { Heart, Building2, UserCircle2, Bell, LogIn, ChevronLeft, ChevronRight }
 import Dashboard from './Dashboard';
 import HospitalDashboard from './HospitalDashboard';
 import AnamnesisForm from './AnamnesisForm';
-import PatientAnamnesisForm from './PatientAnamnesisForm';
-import PatientDashboard from './PatientDashboard';
 
 const images = [
   'fotos/sangue.jpg',
@@ -15,13 +13,12 @@ const images = [
 ];
 
 const App = () => {
-  const [role, setRole] = useState('doador'); // 'doador', 'hospital', 'paciente'
+  const [role, setRole] = useState('doador'); // 'doador', 'hospital'
   const [currentImage, setCurrentImage] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userType, setUserType] = useState(null);
   const [isScreening, setIsScreening] = useState(false);
   const [isLoginView, setIsLoginView] = useState(false);
-  const [patientUrgency, setPatientUrgency] = useState('Urgente');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -32,7 +29,7 @@ const App = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    if (role === 'doador' || role === 'hospital' || role === 'paciente') {
+    if (role === 'doador' || role === 'hospital') {
       if (isLoginView || role === 'hospital') {
         setUserType(role);
         setIsLoggedIn(true);
@@ -48,27 +45,10 @@ const App = () => {
     if (userType === 'hospital') {
       return <HospitalDashboard onLogout={() => setIsLoggedIn(false)} />;
     }
-    if (userType === 'paciente') {
-      return <PatientDashboard urgency={patientUrgency} onLogout={() => setIsLoggedIn(false)} />;
-    }
     return <Dashboard onLogout={() => setIsLoggedIn(false)} />;
   }
 
   if (isScreening) {
-    if (role === 'paciente') {
-      return (
-        <PatientAnamnesisForm
-          onComplete={(urgency) => {
-            setPatientUrgency(urgency);
-            setIsScreening(false);
-            setUserType('paciente');
-            setIsLoggedIn(true);
-          }}
-          onCancel={() => setIsScreening(false)}
-        />
-      );
-    }
-
     return (
       <AnamnesisForm
         onComplete={() => {
@@ -84,7 +64,6 @@ const App = () => {
   const roles = [
     { id: 'doador', label: 'Doador', icon: <UserCircle2 className="w-6 h-6" /> },
     { id: 'hospital', label: 'Hospital', icon: <Building2 className="w-6 h-6" /> },
-    { id: 'paciente', label: 'Paciente', icon: <Heart className="w-6 h-6" /> },
   ];
 
   return (
@@ -170,7 +149,7 @@ const App = () => {
           </div>
 
           {/* Seleção de Role */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             {roles.map((r) => (
               <button
                 key={r.id}
@@ -273,51 +252,6 @@ const App = () => {
                       placeholder="********"
                       className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
                     />
-                  </div>
-                </div>
-              </>
-            ) : role === 'paciente' && !isLoginView ? (
-              <>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="space-y-2 sm:col-span-2">
-                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Nome Completo</label>
-                    <input
-                      type="text"
-                      placeholder="Nome do paciente"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">CPF</label>
-                    <input
-                      type="text"
-                      placeholder="000.000.000-00"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Data de Nascimento</label>
-                    <input
-                      type="date"
-                      className="w-full rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all"
-                    />
-                  </div>
-                  <div className="space-y-2 sm:col-span-2">
-                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Tipo Sanguíneo</label>
-                    <div className="flex gap-2">
-                      <select className="flex-1 rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
-                        <option value="">Tipo</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="AB">AB</option>
-                        <option value="O">O</option>
-                      </select>
-                      <select className="w-20 rounded-xl bg-gray-50 border border-gray-100 p-3 text-sm outline-none ring-brand-red focus:ring-2 focus:bg-white transition-all appearance-none">
-                        <option value="">RH</option>
-                        <option value="+">+</option>
-                        <option value="-">-</option>
-                      </select>
-                    </div>
                   </div>
                 </div>
               </>
