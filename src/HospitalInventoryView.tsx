@@ -290,7 +290,7 @@ const HospitalInventoryView = () => {
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700 uppercase tracking-wide">Motivo/Observação (Opcional)</label>
                   <textarea 
-                    rows="3"
+                    rows={3}
                     className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none focus:ring-2 focus:ring-brand-red/20 transition-all resize-none"
                     placeholder="Ex: Paciente em cirurgia cardíaca..."
                   ></textarea>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -34,10 +35,17 @@ import DonorActivityView from './DonorActivityView';
 import DonorCardView from './DonorCardView';
 
 const Dashboard = ({ onLogout }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [status, setStatus] = useState('livre'); // 'livre' or 'ocupado'
-  const [activeTab, setActiveTab] = useState('Home');
-  const [headerTab, setHeaderTab] = useState('Dashboard');
   const [isScheduling, setIsScheduling] = useState(false);
+
+  const isMenuItemActive = (itemPath) => {
+    if (itemPath === '/donor') {
+      return location.pathname === '/donor' || location.pathname === '/donor/atividades' || location.pathname === '/donor/carteira';
+    }
+    return location.pathname === itemPath;
+  };
   const [showUrgentModal, setShowUrgentModal] = useState(false);
   const [selectedUrgentCase, setSelectedUrgentCase] = useState(null);
   const [selectedHospital, setSelectedHospital] = useState('');
@@ -46,11 +54,11 @@ const Dashboard = ({ onLogout }) => {
   const [appointments, setAppointments] = useState([]);
 
   const menuItems = [
-    { name: 'Home', icon: <LayoutDashboard size={20} /> },
-    { name: 'Mapa', icon: <Map size={20} /> },
-    { name: 'Comunidade', icon: <Users size={20} /> },
-    { name: 'Curiosidades', icon: <Lightbulb size={20} /> },
-    { name: 'Configurações', icon: <Settings size={20} /> },
+    { name: 'Home', path: '/donor', icon: <LayoutDashboard size={20} /> },
+    { name: 'Mapa', path: '/donor/mapa', icon: <Map size={20} /> },
+    { name: 'Comunidade', path: '/donor/comunidade', icon: <Users size={20} /> },
+    { name: 'Curiosidades', path: '/donor/curiosidades', icon: <Lightbulb size={20} /> },
+    { name: 'Configurações', path: '/donor/configuracoes', icon: <Settings size={20} /> },
   ];
 
   const recentActivities = [
@@ -115,21 +123,24 @@ const Dashboard = ({ onLogout }) => {
         </div>
 
         <nav className="flex-1 space-y-2">
-          {menuItems.map((item) => (
-            <motion.button
-              key={item.name}
-              whileHover={{ x: 5 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setActiveTab(item.name)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === item.name
-                  ? 'bg-brand-red-light text-brand-red font-semibold'
-                  : 'text-gray-400 hover:bg-gray-50'
-                }`}
-            >
-              {item.icon}
-              <span>{item.name}</span>
-            </motion.button>
-          ))}
+          {menuItems.map((item) => {
+            const active = isMenuItemActive(item.path);
+            return (
+              <motion.button
+                key={item.name}
+                whileHover={{ x: 5 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate(item.path)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${active
+                    ? 'bg-brand-red-light text-brand-red font-semibold'
+                    : 'text-gray-400 hover:bg-gray-50'
+                  }`}
+              >
+                {item.icon}
+                <span>{item.name}</span>
+              </motion.button>
+            );
+          })}
         </nav>
 
         <div className="mt-auto pt-6 space-y-2 border-t border-gray-100">
@@ -148,24 +159,24 @@ const Dashboard = ({ onLogout }) => {
       </aside>
 
       {/* Main Content */}
-      {activeTab === 'Mapa' ? (
-        <MapView userType="doador" onBack={() => setActiveTab('Home')} />
-      ) : activeTab === 'Curiosidades' ? (
-        <CuriositiesView userType="doador" onBack={() => setActiveTab('Home')} />
-      ) : activeTab === 'Comunidade' ? (
-        <CommunityView userType="doador" onBack={() => setActiveTab('Home')} />
-      ) : activeTab === 'Configurações' ? (
+      {location.pathname === '/donor/mapa' ? (
+        <MapView userType="doador" onBack={() => navigate('/donor')} />
+      ) : location.pathname === '/donor/curiosidades' ? (
+        <CuriositiesView userType="doador" onBack={() => navigate('/donor')} />
+      ) : location.pathname === '/donor/comunidade' ? (
+        <CommunityView userType="doador" onBack={() => navigate('/donor')} />
+      ) : location.pathname === '/donor/configuracoes' ? (
         <div className="flex-1 flex flex-col h-full bg-[#F8F9FA] overflow-y-auto">
           <div className="shrink-0 p-8 lg:p-12 pb-0">
             <button 
-              onClick={() => setActiveTab('Home')}
+              onClick={() => navigate('/donor')}
               className="flex items-center gap-2 text-gray-400 hover:text-brand-red font-bold text-sm uppercase tracking-widest transition-colors group"
             >
               <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
               Voltar ao Painel
             </button>
           </div>
-          <SettingsView userType="doador" onBack={() => setActiveTab('Home')} status={status} setStatus={setStatus} />
+          <SettingsView userType="doador" onBack={() => navigate('/donor')} status={status} setStatus={setStatus} />
         </div>
       ) : (
         <main className="flex-1 overflow-y-auto p-10 lg:p-16">
@@ -174,20 +185,20 @@ const Dashboard = ({ onLogout }) => {
             <header className="flex items-center justify-between mb-12">
               <div className="flex gap-8">
                 <button 
-                  onClick={() => setHeaderTab('Dashboard')}
-                  className={`font-semibold pb-1 transition-all ${headerTab === 'Dashboard' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
+                  onClick={() => navigate('/donor')}
+                  className={`font-semibold pb-1 transition-all ${location.pathname === '/donor' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
                 >
                   Dashboard
                 </button>
                 <button 
-                  onClick={() => setHeaderTab('Minhas Atividades')}
-                  className={`font-semibold pb-1 transition-all ${headerTab === 'Minhas Atividades' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
+                  onClick={() => navigate('/donor/atividades')}
+                  className={`font-semibold pb-1 transition-all ${location.pathname === '/donor/atividades' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
                 >
                   Minhas Atividades
                 </button>
                 <button 
-                  onClick={() => setHeaderTab('Minha Carteira')}
-                  className={`font-semibold pb-1 transition-all ${headerTab === 'Minha Carteira' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
+                  onClick={() => navigate('/donor/carteira')}
+                  className={`font-semibold pb-1 transition-all ${location.pathname === '/donor/carteira' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
                 >
                   Minha Carteira
                 </button>
@@ -203,9 +214,9 @@ const Dashboard = ({ onLogout }) => {
               </div>
             </header>
 
-            {headerTab === 'Minhas Atividades' ? (
+            {location.pathname === '/donor/atividades' ? (
               <DonorActivityView />
-            ) : headerTab === 'Minha Carteira' ? (
+            ) : location.pathname === '/donor/carteira' ? (
               <DonorCardView />
             ) : (
             <>

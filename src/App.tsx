@@ -1,8 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Building2, UserCircle2, Bell, LogIn, ChevronLeft, ChevronRight, ArrowLeft, Mail } from 'lucide-react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import HospitalDashboard from './HospitalDashboard';
 import AnamnesisForm from './AnamnesisForm';
+
+// Route Guards
+const PrivateRoute = ({ children, allowedRole, isLoggedIn, userType }) => {
+  if (!isLoggedIn) {
+    return <Navigate to="/" replace />;
+  }
+  if (allowedRole && userType !== allowedRole) {
+    return <Navigate to={userType === 'hospital' ? '/hospital' : '/donor'} replace />;
+  }
+  return children;
+};
+
+const PublicOnlyRoute = ({ children, isLoggedIn, userType }) => {
+  if (isLoggedIn) {
+    return <Navigate to={userType === 'hospital' ? '/hospital' : '/donor'} replace />;
+  }
+  return children;
+};
 
 const images = [
   'fotos/sangue.jpg',
@@ -13,15 +32,30 @@ const images = [
 ];
 
 const App = () => {
+  const navigate = useNavigate();
   const [role, setRole] = useState('doador'); // 'doador', 'hospital'
   const [currentImage, setCurrentImage] = useState(0);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userType, setUserType] = useState(null);
-  const [isScreening, setIsScreening] = useState(false);
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return localStorage.getItem('doevida_isLoggedIn') === 'true';
+  });
+  const [userType, setUserType] = useState(() => {
+    return localStorage.getItem('doevida_userType') || null;
+  });
+
   const [isLoginView, setIsLoginView] = useState(false);
   const [isForgotPasswordView, setIsForgotPasswordView] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
   const [forgotPasswordSubmitted, setForgotPasswordSubmitted] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('doevida_isLoggedIn', isLoggedIn.toString());
+    if (userType) {
+      localStorage.setItem('doevida_userType', userType);
+    } else {
+      localStorage.removeItem('doevida_userType');
+    }
+  }, [isLoggedIn, userType]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -37,7 +71,7 @@ const App = () => {
         setUserType(role);
         setIsLoggedIn(true);
       } else {
-        setIsScreening(true);
+        navigate('/anamnese');
       }
     } else {
       alert('Selecione um perfil para continuar.');
@@ -53,33 +87,14 @@ const App = () => {
     setForgotPasswordSubmitted(true);
   };
 
-  if (isLoggedIn) {
-    if (userType === 'hospital') {
-      return <HospitalDashboard onLogout={() => setIsLoggedIn(false)} />;
-    }
-    return <Dashboard onLogout={() => setIsLoggedIn(false)} />;
-  }
+  const renderLoginScreen = () => {
+    const roles = [
+      { id: 'doador', label: 'Doador', icon: <UserCircle2 className="w-6 h-6" /> },
+      { id: 'hospital', label: 'Hospital', icon: <Building2 className="w-6 h-6" /> },
+    ];
 
-  if (isScreening) {
     return (
-      <AnamnesisForm
-        onComplete={() => {
-          setIsScreening(false);
-          setUserType('doador');
-          setIsLoggedIn(true);
-        }}
-        onCancel={() => setIsScreening(false)}
-      />
-    );
-  }
-
-  const roles = [
-    { id: 'doador', label: 'Doador', icon: <UserCircle2 className="w-6 h-6" /> },
-    { id: 'hospital', label: 'Hospital', icon: <Building2 className="w-6 h-6" /> },
-  ];
-
-  return (
-    <div className="flex h-screen w-full flex-col md:flex-row font-sans text-gray-800 overflow-hidden">
+      <div className="flex h-screen w-full flex-col md:flex-row font-sans text-gray-800 overflow-hidden">
       {/* Lado Esquerdo - Hero com Carrossel */}
       <div className="relative flex w-full flex-col justify-start pt-32 lg:pt-40 bg-gray-900 p-8 md:w-1/2 lg:p-16 overflow-hidden shrink-0">
         {/* Carrossel de Imagens */}
@@ -455,6 +470,59 @@ const App = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUserType(null);
+    localStorage.removeItem('doevida_isLoggedIn');
+    localStorage.removeItem('doevida_userType');
+    navigate('/');
+  };
+
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <PublicOnlyRoute isLoggedIn={isLoggedIn} userType={userType}>
+            {renderLoginScreen()}
+          </PublicOnlyRoute>
+        }
+      />
+      <Route
+        path="/anamnese"
+        element={
+          <PublicOnlyRoute isLoggedIn={isLoggedIn} userType={userType}>
+            <AnamnesisForm
+              onComplete={() => {
+                setUserType('doador');
+                setIsLoggedIn(true);
+              }}
+              onCancel={() => navigate('/')}
+            />
+          </PublicOnlyRoute>
+        }
+      />
+      <Route
+        path="/donor/*"
+        element={
+          <PrivateRoute allowedRole="doador" isLoggedIn={isLoggedIn} userType={userType}>
+            <Dashboard onLogout={handleLogout} />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/hospital/*"
+        element={
+          <PrivateRoute allowedRole="hospital" isLoggedIn={isLoggedIn} userType={userType}>
+            <HospitalDashboard onLogout={handleLogout} />
+          </PrivateRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };
 

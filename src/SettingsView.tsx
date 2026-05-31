@@ -2,7 +2,14 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Pencil, ShieldCheck, Mail, AlertCircle, Save, Megaphone, Info, CheckCircle2, X } from 'lucide-react';
 
-const SettingsView = ({ userType, onBack, status: propStatus, setStatus: propSetStatus }) => {
+interface SettingsViewProps {
+  userType: string;
+  onBack: () => void;
+  status?: string;
+  setStatus?: React.Dispatch<React.SetStateAction<string>> | ((status: string) => void);
+}
+
+const SettingsView = ({ userType, onBack, status: propStatus, setStatus: propSetStatus }: SettingsViewProps) => {
   const isHospital = userType === 'hospital';
   const isPatient = userType === 'paciente';
 

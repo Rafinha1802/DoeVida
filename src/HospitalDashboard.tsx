@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -29,8 +30,8 @@ import SettingsView from './SettingsView';
 import HospitalInventoryView from './HospitalInventoryView';
 
 const HospitalDashboard = ({ onLogout }) => {
-  const [activeTab, setActiveTab] = useState('Home');
-  const [headerTab, setHeaderTab] = useState('Dashboard');
+  const location = useLocation();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([
     { id: 1, name: 'Amanda Silva', blood: 'O+', date: 'Hoje', time: '14:30', status: 'PENDENTE', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop' },
     { id: 2, name: 'Carlos Santos', blood: 'A-', date: 'Amanhã', time: '09:00', status: 'PENDENTE', avatar: 'https://i.pravatar.cc/150?u=carlos' },
@@ -43,11 +44,18 @@ const HospitalDashboard = ({ onLogout }) => {
 
 
   const menuItems = [
-    { name: 'Home', icon: <LayoutDashboard size={20} /> },
-    { name: 'Mapa', icon: <Map size={20} /> },
-    { name: 'Curiosidades', icon: <Lightbulb size={20} /> },
-    { name: 'Configurações', icon: <Settings size={20} /> },
+    { name: 'Home', path: '/hospital', icon: <LayoutDashboard size={20} /> },
+    { name: 'Mapa', path: '/hospital/mapa', icon: <Map size={20} /> },
+    { name: 'Curiosidades', path: '/hospital/curiosidades', icon: <Lightbulb size={20} /> },
+    { name: 'Configurações', path: '/hospital/configuracoes', icon: <Settings size={20} /> },
   ];
+
+  const isMenuItemActive = (itemPath) => {
+    if (itemPath === '/hospital') {
+      return location.pathname === '/hospital' || location.pathname === '/hospital/inventario' || location.pathname === '/hospital/analise';
+    }
+    return location.pathname === itemPath;
+  };
 
   const inventory = [
     { type: 'A+ Positivo', units: 12, status: 'Positivo', color: 'bg-blue-600' },
@@ -71,26 +79,29 @@ const HospitalDashboard = ({ onLogout }) => {
         </div>
 
         <nav className="flex-1 space-y-2">
-          {menuItems.map((item) => (
-            <motion.button
-              key={item.name}
-              whileHover={{ x: 5 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setActiveTab(item.name)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === item.name
-                  ? 'bg-brand-red-light text-brand-red font-semibold'
-                  : 'text-gray-400 hover:bg-gray-50'
-                }`}
-            >
-              {item.icon}
-              <span>{item.name}</span>
-            </motion.button>
-          ))}
+          {menuItems.map((item) => {
+            const active = isMenuItemActive(item.path);
+            return (
+              <motion.button
+                key={item.name}
+                whileHover={{ x: 5 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate(item.path)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${active
+                    ? 'bg-brand-red-light text-brand-red font-semibold'
+                    : 'text-gray-400 hover:bg-gray-50'
+                  }`}
+              >
+                {item.icon}
+                <span>{item.name}</span>
+              </motion.button>
+            );
+          })}
         </nav>
 
         <div className="mt-auto pt-6 space-y-2">
           <button 
-            onClick={() => { setActiveTab('Home'); setHeaderTab('Inventário'); }}
+            onClick={() => navigate('/hospital/inventario')}
             className="w-full bg-brand-red text-white py-4 rounded-xl font-bold hover:bg-red-700 transition-colors shadow-lg shadow-brand-red/20 mb-6">
             Poste alguma urgência
           </button>
@@ -111,12 +122,12 @@ const HospitalDashboard = ({ onLogout }) => {
       </aside>
 
       {/* Main Content */}
-      {activeTab === 'Mapa' ? (
-        <MapView userType="hospital" onBack={() => setActiveTab('Home')} />
-      ) : activeTab === 'Curiosidades' ? (
-        <CuriositiesView userType="hospital" onBack={() => setActiveTab('Home')} />
-      ) : activeTab === 'Configurações' ? (
-        <SettingsView userType="hospital" onBack={() => setActiveTab('Home')} />
+      {location.pathname === '/hospital/mapa' ? (
+        <MapView userType="hospital" onBack={() => navigate('/hospital')} />
+      ) : location.pathname === '/hospital/curiosidades' ? (
+        <CuriositiesView userType="hospital" onBack={() => navigate('/hospital')} />
+      ) : location.pathname === '/hospital/configuracoes' ? (
+        <SettingsView userType="hospital" onBack={() => navigate('/hospital')} />
       ) : (
         <main className="flex-1 overflow-y-auto p-10 lg:p-16">
           <div className="max-w-[1600px] mx-auto">
@@ -124,20 +135,20 @@ const HospitalDashboard = ({ onLogout }) => {
             <header className="flex items-center justify-between mb-12">
               <div className="flex gap-8">
                 <button
-                  onClick={() => setHeaderTab('Dashboard')}
-                  className={`font-semibold pb-1 transition-all ${headerTab === 'Dashboard' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
+                  onClick={() => navigate('/hospital')}
+                  className={`font-semibold pb-1 transition-all ${location.pathname === '/hospital' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
                 >
                   Dashboard
                 </button>
                 <button
-                  onClick={() => setHeaderTab('Inventário')}
-                  className={`font-semibold pb-1 transition-all ${headerTab === 'Inventário' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
+                  onClick={() => navigate('/hospital/inventario')}
+                  className={`font-semibold pb-1 transition-all ${location.pathname === '/hospital/inventario' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
                 >
                   Inventário
                 </button>
                 <button
-                  onClick={() => setHeaderTab('Análise')}
-                  className={`font-semibold pb-1 transition-all ${headerTab === 'Análise' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
+                  onClick={() => navigate('/hospital/analise')}
+                  className={`font-semibold pb-1 transition-all ${location.pathname === '/hospital/analise' ? 'text-brand-red border-b-2 border-brand-red' : 'text-gray-400 hover:text-gray-600'}`}
                 >
                   Análise
                 </button>
@@ -153,9 +164,9 @@ const HospitalDashboard = ({ onLogout }) => {
               </div>
             </header>
 
-            {headerTab === 'Análise' ? (
+            {location.pathname === '/hospital/analise' ? (
               <HospitalAnalytics />
-            ) : headerTab === 'Inventário' ? (
+            ) : location.pathname === '/hospital/inventario' ? (
               <HospitalInventoryView />
             ) : (
               <div className="flex gap-8 h-full">
