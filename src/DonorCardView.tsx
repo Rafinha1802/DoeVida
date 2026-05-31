@@ -14,7 +14,7 @@ const DonorCardView = () => {
     id: "DV-2026-0854",
     since: "Maio 2023",
     lastDonation: "12 Set 2025",
-    totalLivesSaved: 14,
+    totalLivesSaved: 12,
     status: "Doador Ativo",
     level: "Doador Prata"
   };
@@ -137,6 +137,7 @@ const DonorCardView = () => {
               <div>
                 <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Vidas Salvas</p>
                 <p className="text-base font-bold text-gray-800">{donorInfo.totalLivesSaved} Vidas</p>
+                <p className="text-[10px] text-gray-400 font-medium">3 doações x 4 vidas por doação</p>
               </div>
             </div>
 
@@ -254,7 +255,7 @@ const DonorCardView = () => {
           </div>
           <div>
             <h3 className="text-xl font-bold text-gray-900">Benefícios Desbloqueados</h3>
-            <p className="text-sm text-gray-500">Pelo seu impacto de {donorInfo.totalLivesSaved} vidas salvas</p>
+            <p className="text-sm text-gray-500">Pelo seu impacto de {donorInfo.totalLivesSaved} vidas salvas (3 doações x 4 vidas por doação)</p>
           </div>
         </div>
 

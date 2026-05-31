@@ -6,7 +6,7 @@ const HospitalAnalytics = () => {
   const kpis = [
     { title: 'Doadores Ativos', value: '1.240', trend: '+12.5%', isPositive: true, icon: <Users size={24} /> },
     { title: 'Bolsas Coletadas', value: '3.450', trend: '+5.2%', isPositive: true, icon: <Activity size={24} /> },
-    { title: 'Vidas Salvas', value: '10.350', trend: '+5.2%', isPositive: true, icon: <HeartPulse size={24} /> },
+    { title: 'Vidas Salvas', value: '10.350', icon: <HeartPulse size={24} /> },
     { title: 'Tempo Médio', value: '15min', trend: '-2.4%', isPositive: true, icon: <Clock size={24} /> },
   ];
 
@@ -58,10 +58,12 @@ const HospitalAnalytics = () => {
             <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">{kpi.title}</p>
             <div className="flex items-end gap-3">
               <span className="text-4xl font-black text-gray-800">{kpi.value}</span>
-              <div className={`flex items-center gap-1 text-sm font-bold mb-1 ${kpi.isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                {kpi.isPositive ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-                {kpi.trend}
-              </div>
+              {kpi.trend && (
+                <div className={`flex items-center gap-1 text-sm font-bold mb-1 ${kpi.isPositive ? 'text-green-500' : 'text-red-500'}`}>
+                  {kpi.isPositive ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
+                  {kpi.trend}
+                </div>
+              )}
             </div>
           </div>
         ))}

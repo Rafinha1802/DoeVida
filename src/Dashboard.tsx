@@ -54,9 +54,9 @@ const Dashboard = ({ onLogout }) => {
   ];
 
   const recentActivities = [
-    { hospital: 'Hospital Português', date: 'Out 12, 2023', status: 'COMPLETO' },
-    { hospital: 'Cruz Vermelha', date: 'Ago 28, 2023', status: 'COMPLETO' },
-    { hospital: 'Hospital Unimed', date: 'Mai 15, 2023', status: 'COMPLETO' },
+    { hospital: 'Fundação Hemope', date: 'Out 12, 2023', status: 'COMPLETO' },
+    { hospital: 'Banco de Sangue Hemato (GSH)', date: 'Ago 28, 2023', status: 'COMPLETO' },
+    { hospital: 'Hospital da Restauração', date: 'Mai 15, 2023', status: 'COMPLETO' },
   ];
 
   const handleScheduleSubmit = (e) => {
@@ -83,7 +83,7 @@ const Dashboard = ({ onLogout }) => {
       type: 'Emergência',
       blood: 'O+',
       dist: '1.2 km distância',
-      location: 'Hospital Pediátrico',
+      location: 'Fundação Hemope',
       color: 'bg-red-500',
       description: 'Uma emergência cirúrgica crítica requer sangue total Tipo O Positivo imediato. Seu perfil corresponde a esta solicitação. Sua contribuição pode salvar uma vida hoje.',
       timeRemaining: '25 Minutos',
@@ -93,7 +93,7 @@ const Dashboard = ({ onLogout }) => {
       type: 'Urgente',
       blood: 'A-',
       dist: '3.8 km distância',
-      location: 'City General',
+      location: 'Banco de Sangue Hemato (GSH)',
       color: 'bg-gray-200',
       description: 'Uma emergência cirúrgica crítica requer sangue total Tipo A Negativo imediato. Seu perfil corresponde a esta solicitação. Sua contribuição pode salvar uma vida hoje.',
       timeRemaining: '42 Minutos',
@@ -165,7 +165,7 @@ const Dashboard = ({ onLogout }) => {
               Voltar ao Painel
             </button>
           </div>
-          <SettingsView userType="doador" onBack={() => setActiveTab('Home')} />
+          <SettingsView userType="doador" onBack={() => setActiveTab('Home')} status={status} setStatus={setStatus} />
         </div>
       ) : (
         <main className="flex-1 overflow-y-auto p-10 lg:p-16">
@@ -210,39 +210,11 @@ const Dashboard = ({ onLogout }) => {
             ) : (
             <>
             {/* Welcome Section */}
-            <div className="flex justify-between items-start mb-10">
-              <div className="max-w-xl">
-                <h1 className="text-3xl font-bold mb-4">Bem Vindo (a) de volta, <span className="text-brand-red">Amanda.</span></h1>
-                <p className="text-gray-500 leading-relaxed">
-                  Com a sua contribuição você ajudou diretamente a salvar 14 vidas nesse ano. Está pronto para continuar essa jornada de salvar vidas?
-                </p>
-              </div>
-
-              {/* Status Switcher */}
-              <div className="bg-gray-100 p-1 rounded-full flex relative w-48 h-12">
-                <motion.div
-                  className="absolute top-1 bottom-1 bg-white rounded-full shadow-sm"
-                  initial={false}
-                  animate={{
-                    x: status === 'livre' ? 0 : 92,
-                    width: status === 'livre' ? '92px' : '92px'
-                  }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                />
-                <button
-                  onClick={() => setStatus('livre')}
-                  className={`flex-1 flex items-center justify-center gap-2 relative z-10 transition-colors ${status === 'livre' ? 'text-gray-800 font-bold' : 'text-gray-400'}`}
-                >
-                  <span className={`w-2 h-2 rounded-full ${status === 'livre' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
-                  Livre
-                </button>
-                <button
-                  onClick={() => setStatus('ocupado')}
-                  className={`flex-1 flex items-center justify-center relative z-10 transition-colors ${status === 'ocupado' ? 'text-gray-800 font-bold' : 'text-gray-400'}`}
-                >
-                  Ocupado
-                </button>
-              </div>
+            <div className="mb-10">
+              <h1 className="text-3xl font-bold mb-4">Bem Vindo (a) de volta, <span className="text-brand-red">Amanda.</span></h1>
+              <p className="text-gray-500 leading-relaxed max-w-xl">
+                Com a sua contribuição você ajudou diretamente a salvar 12 vidas nesse ano. Está pronto para continuar essa jornada de salvar vidas?
+              </p>
             </div>
 
             {/* Stats Grid */}
@@ -272,7 +244,8 @@ const Dashboard = ({ onLogout }) => {
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
                     <p className="text-gray-400 text-sm font-medium mb-2 uppercase tracking-wider">Impactos Causados</p>
-                    <h2 className="text-4xl font-bold mb-4">14 Vidas Salvas</h2>
+                    <h2 className="text-4xl font-bold mb-1">12 Vidas Salvas</h2>
+                    <p className="text-xs text-gray-400 mb-3 font-semibold">Reflete 3 doações realizadas (4 vidas salvas por doação)</p>
                   </div>
                   <div>
                     <div className="flex justify-between text-xs font-bold mb-2">
@@ -436,9 +409,9 @@ const Dashboard = ({ onLogout }) => {
                           className="w-full rounded-xl bg-gray-50 border border-gray-100 p-4 outline-none focus:ring-2 focus:ring-brand-red/20 transition-all appearance-none"
                         >
                           <option value="">Selecione um local...</option>
-                          <option value="Hospital Português">Hospital Português (08:00 - 18:00)</option>
-                          <option value="Cruz Vermelha">Cruz Vermelha (Atendimento 24h)</option>
-                          <option value="Hospital Unimed">Hospital Unimed (07:00 - 19:00)</option>
+                          <option value="Fundação Hemope">Fundação Hemope (Hemocentro Coordenador Recife) (07:15 - 18:30)</option>
+                          <option value="Banco de Sangue Hemato (GSH)">Banco de Sangue Hemato (GSH) (07:00 - 18:00)</option>
+                          <option value="Hospital da Restauração">Hospital da Restauração (Atendimento 24h)</option>
                         </select>
                       </div>
 

@@ -27,9 +27,9 @@ const MapView = ({ userType, onBack }) => {
   ];
 
   const hospitals = [
-    { id: 1, name: 'Hospital Português', dist: '1.2 km', pos: { top: '35%', left: '45%' }, time: '12 min', status: 'Necessidade Urgente', hours: '08:00 - 18:00' },
-    { id: 2, name: 'Cruz Vermelha', dist: '3.5 km', pos: { top: '75%', left: '25%' }, time: '25 min', status: 'Estoque Moderado', hours: 'Atendimento 24h' },
-    { id: 3, name: 'Hospital Unimed', dist: '4.8 km', pos: { top: '25%', left: '15%' }, time: '35 min', status: 'Necessidade Crítica', hours: '07:00 - 19:00' },
+    { id: 1, name: 'Fundação Hemope (Hemocentro Coordenador Recife)', dist: '1.2 km', pos: { top: '35%', left: '45%' }, time: '12 min', status: 'Necessidade Urgente', hours: 'Segunda a sábado e feriados, das 07h15 às 18h30', address: 'Rua Joaquim Nabuco, 171 - Graças, Recife - PE', phone: '(81) 3182-4600 / 3182-4648 / 0800-081-1535' },
+    { id: 2, name: 'Banco de Sangue Hemato (GSH)', dist: '3.5 km', pos: { top: '75%', left: '25%' }, time: '25 min', status: 'Estoque Moderado', hours: 'Todos os dias, das 7h às 18h', address: 'Rua Tabira, 54 - Boa Vista, Recife - PE', phone: '(81) 3972-4050 / (81) 98107-0076' },
+    { id: 3, name: 'Hospital da Restauração', dist: '4.8 km', pos: { top: '25%', left: '15%' }, time: '35 min', status: 'Necessidade Crítica', hours: 'Atendimento 24h', address: 'Av. Governador Agamenon Magalhães, s/n - Derby, Recife - PE', phone: '(81) 3182-2000' },
   ];
 
 
@@ -146,7 +146,10 @@ const MapView = ({ userType, onBack }) => {
                     className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 bg-white p-4 rounded-2xl shadow-2xl min-w-[160px]"
                   >
                     <p className="font-bold text-gray-800">{hospital.name}</p>
-                    <p className="text-[10px] text-brand-red font-bold mb-1">{hospital.status}</p>
+                    {hospital.address && (
+                      <p className="text-[9px] text-gray-500 mt-0.5 leading-tight">{hospital.address}</p>
+                    )}
+                    <p className="text-[10px] text-brand-red font-bold mb-1 mt-1">{hospital.status}</p>
                     <p className="text-[10px] text-gray-400 flex items-center gap-1"><MapPin size={10} /> {hospital.dist}</p>
                     {hospital.hours && (
                       <p className="text-[10px] text-blue-600 font-bold flex items-center gap-1 mt-1">
@@ -214,11 +217,19 @@ const MapView = ({ userType, onBack }) => {
                     </div>
                     <div className="flex-1">
                       <p className="font-bold text-gray-800">{hospital.name}</p>
-                      <p className="text-xs text-gray-400">{hospital.dist} • {hospital.time}</p>
+                      {hospital.address && (
+                        <p className="text-[11px] text-gray-500 mt-0.5">{hospital.address}</p>
+                      )}
+                      <p className="text-xs text-gray-400 mt-0.5">{hospital.dist} • {hospital.time}</p>
                       <p className="text-[10px] text-brand-red font-bold mt-1">{hospital.status}</p>
                       {hospital.hours && (
                         <p className="text-[10px] text-blue-600 font-bold flex items-center gap-1 mt-1">
                           <Clock size={10} /> {hospital.hours}
+                        </p>
+                      )}
+                      {hospital.phone && (
+                        <p className="text-[10px] text-gray-500 font-medium mt-1">
+                          Tel: {hospital.phone}
                         </p>
                       )}
                     </div>

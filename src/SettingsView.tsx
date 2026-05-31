@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Pencil, ShieldCheck, Mail, AlertCircle, Save, Megaphone, Info, CheckCircle2, X } from 'lucide-react';
 
-const SettingsView = ({ userType, onBack }) => {
+const SettingsView = ({ userType, onBack, status: propStatus, setStatus: propSetStatus }) => {
   const isHospital = userType === 'hospital';
   const isPatient = userType === 'paciente';
+
+  const [localStatus, setLocalStatus] = useState('livre');
+  const status = propStatus !== undefined ? propStatus : localStatus;
+  const setStatus = propSetStatus !== undefined ? propSetStatus : setLocalStatus;
 
   // State for form data
   const [formData, setFormData] = useState({
@@ -14,12 +18,12 @@ const SettingsView = ({ userType, onBack }) => {
       ? 'Hospital de referência na região metropolitana, contando com um banco de sangue ativo 24 horas por dia.' 
       : isPatient 
       ? 'Aguardando doadores compatíveis para procedimento cirúrgico. Agradeço imensamente a todos os heróis!'
-      : 'Doadora ativa e apaixonada por ajudar o próximo. Já salvei 14 vidas!',
+      : 'Doadora ativa e apaixonada por ajudar o próximo. Já salvei 12 vidas!',
     extra: isHospital ? '12.345.678/0001-99' : isPatient ? 'O-' : 'Ela / Dela',
     // Patient Campaign Fields
     bloodType: 'O-',
     urgency: 'Urgente',
-    hospital: 'Hospital Português',
+    hospital: 'Fundação Hemope',
     isCampaignActive: false
   });
 
@@ -104,7 +108,7 @@ const SettingsView = ({ userType, onBack }) => {
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
                       {isPatient ? 'Status' : 'Vidas'}
                     </p>
-                    <p className="text-xl font-bold text-brand-red">{isPatient ? 'Urgente' : '14'}</p>
+                    <p className="text-xl font-bold text-brand-red">{isPatient ? 'Urgente' : '12'}</p>
                   </div>
                 </div>
               )}
@@ -219,6 +223,45 @@ const SettingsView = ({ userType, onBack }) => {
                 </div>
               </div>
             </div>
+
+            {!isHospital && !isPatient && (
+              <div className="bg-white rounded-[40px] p-10 shadow-sm border border-gray-100">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">Status de Disponibilidade</h3>
+                    <p className="text-sm text-gray-500">Fique como 'Livre' para receber solicitações de doação urgentes.</p>
+                  </div>
+                  
+                  {/* Status Switcher */}
+                  <div className="bg-gray-100 p-1 rounded-full flex relative w-48 h-12 shrink-0 self-center sm:self-auto">
+                    <motion.div
+                      className="absolute top-1 bottom-1 bg-white rounded-full shadow-sm"
+                      initial={false}
+                      animate={{
+                        x: status === 'livre' ? 0 : 92,
+                        width: status === 'livre' ? '92px' : '92px'
+                      }}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setStatus('livre')}
+                      className={`flex-1 flex items-center justify-center gap-2 relative z-10 transition-colors ${status === 'livre' ? 'text-gray-800 font-bold' : 'text-gray-400'}`}
+                    >
+                      <span className={`w-2 h-2 rounded-full ${status === 'livre' ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                      Livre
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setStatus('ocupado')}
+                      className={`flex-1 flex items-center justify-center relative z-10 transition-colors ${status === 'ocupado' ? 'text-gray-800 font-bold' : 'text-gray-400'}`}
+                    >
+                      Ocupado
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {isPatient && (
               <div className="bg-white rounded-[40px] p-10 shadow-sm border border-gray-100">

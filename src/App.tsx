@@ -246,7 +246,16 @@ const App = () => {
                     </div>
                   )}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Senha</label>
+                    <div className="flex justify-between items-center">
+                      <label className="text-[10px] font-bold text-gray-700 uppercase tracking-wide">Senha</label>
+                      <button
+                        type="button"
+                        onClick={() => alert('Um link de redefinição de senha foi enviado para seu e-mail.')}
+                        className="text-[10px] font-bold text-brand-red hover:underline focus:outline-none"
+                      >
+                        Esqueci minha senha
+                      </button>
+                    </div>
                     <input
                       type="password"
                       placeholder="********"
